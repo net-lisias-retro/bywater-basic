@@ -1,4 +1,4 @@
-4-16-2020
+4-16-2020  Updated 4-19-2020
 
 This should work under most any Linux and Linux under
 WSL (Ubuntu, Debian) for windows at the command prompt.
@@ -53,4 +53,42 @@ There are many, many examples in BAS-EXAMPLES and information
 in INFO.
 
 All should work fine. But as usual no guarentee is implied.
+
+4-19-2020
+
+I have included some runtime files and sample input files.
+Place profile.bas in your current working directory and
+relays.pro and allon.inp and alloff.inp. The file examples
+will let you to by example turn off all relays alloff.inp.
+To do this you would enter at the command line:
+
+bwbasic --profile relays.pro --tape alloff.inp relays.bas
+
+To turn all relays on:
+
+bwbasic --profile relays.pro --tape allon.inp relays.bas
+
+To work interaactive you would:
+
+bwbasic relays.bas
+
+Once you get a handle on relays.bas commands you can
+create you own .inp files and reference them by
+
+bwbasic --profile relays.pro --tape <your file.inp > relays.bas
+
+All the above can placed into a simple script file.
+
+The purpose of relays.pro is to redirect standard and error
+outputs to files relays-stdout.txt and relays-error.txt and
+to tuen off ANSI so the output is easily readable without
+escape codes. Using relays.pro then gives you a quiet display
+suitable when scripts via .inp is executed.
+
+The purpose of profile.bas which is used by default is to
+enable ANSI control sequences so the command 'cls' works
+and to set the normal editor to nano which if desired can
+bet set to vi. The editor comes into play when creating
+or changing a .bas file. To use while running bwbasic you
+would issuse the command edit.
 
