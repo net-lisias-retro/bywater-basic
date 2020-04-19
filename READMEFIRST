@@ -81,7 +81,7 @@ All the above can placed into a simple script file.
 
 The purpose of relays.pro is to redirect standard and error
 outputs to files relays-stdout.txt and relays-error.txt and
-to tuen off ANSI so the output is easily readable without
+to turn off ANSI so the output is easily readable without
 escape codes. Using relays.pro then gives you a quiet display
 suitable when scripts via .inp is executed.
 
@@ -90,5 +90,5 @@ enable ANSI control sequences so the command 'cls' works
 and to set the normal editor to nano which if desired can
 bet set to vi. The editor comes into play when creating
 or changing a .bas file. To use while running bwbasic you
-would issuse the command edit.
+would issue the command edit.
 
