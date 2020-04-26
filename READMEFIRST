@@ -1,4 +1,4 @@
-4-16-2020  Updated 4-19-2020
+4-16-2020  Updated 4-24-2020
 
 This should work under most any Linux and Linux under
 WSL (Ubuntu, Debian) for windows at the command prompt.
@@ -15,17 +15,19 @@ To make 'cls' work as it does in DOS perform once
 
 sudo ln /usr/bin/clear /usr/bin/cls
 
-Now lets build bwbasic
+Now lets build bwbasic and renum
 
-sh compile
-
-Read prompts
+(1) make
+To test before installing (2) make runlocal
+Then to install (3) sudo make install
+To remove installed programs (4) sudo make remove
+To remove compiled programs (5) make clean
 
 That's it.
 
 bwbasic and renum are in /usr/local/bin
 
-If you want bwbasic to work from a GUI:
+If you want bwbasic to work from a GUI cd GUI
 (1) copy bwbasic.sh to a suitable location
     and make sure to  chmod 755 bwbasic.sh
     so it's executable.
@@ -34,10 +36,14 @@ If you want bwbasic to work from a GUI:
     for File Location then cp bwbasic.desktop to ~/Desktop/.
     and it should work from the desktop.
 
+Doing the above should allow you to click on the icon
+on your desktop and start bwbasic.
+
 If running under Windows 10 you will need 'gcc' compiler.
 To see if it's installed type in  gcc --version  if you
-think you have gcc installed verify your 'path'. If OK
-then at the command prompt
+think you have gcc installed verify your 'PATH' by entering
+at the command prompt  echo %PATH% to see if it's there.
+If OK then at the command prompt
 
 cd <here>
 
@@ -47,14 +53,15 @@ Read prompts
 
 That's it.
 
-Move bwbasic.exe and renum.exe to locations in your path.
+Move bwbasic.exe and renum.exe to locations in your PATH.
 
 There are many, many examples in BAS-EXAMPLES and information
 in INFO.
 
 All should work fine. But as usual no guarentee is implied.
 
-4-19-2020
+
+Any references below to relays pertain to the BeagleBone Black.
 
 I have included some runtime files and sample input files.
 Place profile.bas in your current working directory and
@@ -68,7 +75,7 @@ To turn all relays on:
 
 bwbasic --profile relays.pro --tape allon.inp relays.bas
 
-To work interaactive you would:
+To work interactive you would:
 
 bwbasic relays.bas
 
