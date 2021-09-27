@@ -1,12 +1,30 @@
-# Default auto detect text, and normalize EOL
-*       text=auto eol=crlf
+# NOTE: Since these sources could be compiled in DOS and Win the line
+# endings are forced to CRLF for compatibility with those
+# environments. Its likely they won't have access to GIT and the files
+# will come from a Linux host, which would automatically force use LF.
+# Since UNIX usually can handle both gracefully I'm mostly forcing
+# this repo to CRLF.
+
+# OK so I'm (ChipMaster) apparently not smart enough so here goes plan
+# "b" for handling line endings.
 
 # Specific text files needing EOL fixing
-*.in    text eol=crlf
-*.c     text eol=crlf
-*.h     text eol=crlf
-*.bas   text eol=crlf
-INSTALL text eol=crlf
-COPYING text eol=crlf
-README  text eol=crlf
+*.c          text eol=crlf
+*.C          text eol=crlf
+*.h          text eol=crlf
+*.H          text eol=crlf
+*.bas        text eol=crlf
+*.BAS        text eol=crlf
+*.bat        text eol=crlf
+*.BAT        text eol=crlf
+*.doc        text eol=crlf
+*.DOC        text eol=crlf
+*.txt        text eol=crlf
+*.TXT        text eol=crlf
+*.html       text eol=crlf
+*.HTML       text eol=crlf
+INSTALL      text eol=crlf
+COPYING      text eol=crlf
+README       text eol=crlf
+READMEFIRST  text eol=crlf
 /bwbasic.doc text eol=crlf
