@@ -1,0 +1,12 @@
+# Default auto detect text, and normalize EOL
+*       text=auto eol=crlf
+
+# Specific text files needing EOL fixing
+*.in    text eol=crlf
+*.c     text eol=crlf
+*.h     text eol=crlf
+*.bas   text eol=crlf
+INSTALL text eol=crlf
+COPYING text eol=crlf
+README  text eol=crlf
+/bwbasic.doc text eol=crlf
