@@ -1,4 +1,4 @@
-4-16-2020  Updated 4-30-2020 3.20b
+4-16-2020  Updated 8-8-2020 3.20d
 
 Bwbasic has been around since the early 1990's
 in one form or another and actually quite powerfull.
@@ -10,7 +10,7 @@ If running this under Linux you will need 'gcc' compiler.
 To see if it's installed type in  gcc --version  if OK
 then simply do the following:
 
-tar -xf bwbasic-3.20b.tar
+tar -xf bwbasic-3.20d.tar
 
 cd <here>
 
@@ -33,7 +33,7 @@ To remove compiled programs and recompile (5) make clean
 
 That's it.
 
-bwbasic and renum will be in /usr/local/bin
+bwbasic and renum will be in /usr/bin
 
 If you want bwbasic to work from a GUI cd GUI
 (1) copy bwbasic.sh to a suitable location

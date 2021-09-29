@@ -1,7 +1,7 @@
 @echo off
-echo 12/13/2019 Ken. bwbasic. Works under Windows 10 using gcc 7.4.0
-echo                           and gcc 8.1.0 64 bit
-echo                                  Wait
+echo 8-5-2020 Ken. bwbasic. Works under Windows 10 using gcc 7.4.0
+echo                         and gcc 8.1.0 64 bit
+echo                                Wait
 echo.
 
 if exist *.o del *.o
@@ -25,7 +25,7 @@ call stdcomp bwx_tty.c
 call stdcomp bwd_cmd.c
 call stdcomp bwd_fun.c
 
-gcc -s -ansi -o bwbasic.exe bwb_cmd.o bwb_cnd.o bwb_dio.o bwb_exp.o bwb_fnc.o bwb_inp.o bwb_int.o bwb_prn.o bwb_stc.o bwb_str.o bwb_tbl.o bwb_var.o bwbasic.o bwd_cmd.o bwd_fun.o bwx_tty.o
+gcc -s -ansi -DMSDOS -o bwbasic.exe bwb_cmd.o bwb_cnd.o bwb_dio.o bwb_exp.o bwb_fnc.o bwb_inp.o bwb_int.o bwb_prn.o bwb_stc.o bwb_str.o bwb_tbl.o bwb_var.o bwbasic.o bwd_cmd.o bwd_fun.o bwx_tty.o
 
 gcc -s -ansi -DMSDOS -o renum.exe renum.c 
 
@@ -49,3 +49,4 @@ echo.
 echo --Done--
 echo.
 @echo on
+

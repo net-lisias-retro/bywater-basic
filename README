@@ -42,8 +42,8 @@
                Version 3.20 modifications by Howard Wulf, AF5NE
                                 4 June 2017
 
-               Version 3.20b modifications by Ken Martin
-                            Nov. 2019 Apr. 2020
+               Version 3.20c modifications by Ken Martin
+                            Nov. 2019 Aug. 2020
 
 
 
@@ -66,10 +66,10 @@ DESCRIPTION:
 
 
 
-OBTAINING THE SOURCE CODE:
+OBTAINING THE CODE:
 
-   The source code for bwbasic-3.20b is available from
-   https://github.com/kenmartin-unix/Bwbasic-3.20b
+   The executable code for bwbasic-3.20c is available from
+   https://github.com/kenmartin-unix/Bwbasic
 
    The source code for older versions bwBASIC is available from
    http://bwbasic.sourceforge.net
@@ -94,9 +94,13 @@ A LIST OF BASIC COMMANDS AND FUNCTIONS IMPLEMENTED in bwBASIC:
 
 CHANGE HISTORY
 
-CHANGES FROM 3.20 to 3.20b
+CHANGES FROM 3.20 to 3.20c
 
    * General cleanup and bug fixes.
+     Added a search for profile.bas in Windows
+        C:\Bwbasic
+     And Linux
+        /usr/share/bwbasic
 
 CHANGES FROM 3.10 to 3.20
 
