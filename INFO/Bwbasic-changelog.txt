@@ -42,9 +42,6 @@
                Version 3.20 modifications by Howard Wulf, AF5NE
                                 4 June 2017
 
-               Version 3.20b modifications by Ken Martin
-                            Nov. 2019 Apr. 2020
-
 
 
 
@@ -68,10 +65,7 @@ DESCRIPTION:
 
 OBTAINING THE SOURCE CODE:
 
-   The source code for bwbasic-3.20b is available from
-   https://github.com/kenmartin-unix/Bwbasic-3.20b
-
-   The source code for older versions bwBASIC is available from
+   The source code for bwBASIC is available from
    http://bwbasic.sourceforge.net
 
 
@@ -80,7 +74,6 @@ COMMUNICATIONS:
    email:  tcamp@delphi.com  (for Ted Campbell)
            eidetics@cerf.net (for Jon Volkoff)
            mutazilah@gmail.com (for Paul Edwards)
-           ken.at.github@gmail.com (for Ken Martin)
 
 
 A LIST OF BASIC COMMANDS AND FUNCTIONS IMPLEMENTED in bwBASIC:
@@ -93,10 +86,6 @@ A LIST OF BASIC COMMANDS AND FUNCTIONS IMPLEMENTED in bwBASIC:
 
 
 CHANGE HISTORY
-
-CHANGES FROM 3.20 to 3.20b
-
-   * General cleanup and bug fixes.
 
 CHANGES FROM 3.10 to 3.20
 
@@ -490,4 +479,3 @@ CHANGES FROM 2.10 to 2.20:
    * Added a RENUM facility in a standalone program.
 
    * Added checking in configure for unistd.h (important on Sun systems).
-

@@ -2,6 +2,7 @@
 *.o
 /bwbasic
 /renum
+/autom4te.cache/
 
 # maintainer artifacts
 editfl
@@ -9,4 +10,3 @@ editfl.bas
 *.geany
 *.orig
 *.rej
-

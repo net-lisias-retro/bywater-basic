@@ -17,6 +17,8 @@
 *.BAS        text eol=crlf
 *.bat        text eol=crlf
 *.BAT        text eol=crlf
+*.cmd        text eol=crlf
+*.CMD        text eol=crlf
 *.doc        text eol=crlf
 *.DOC        text eol=crlf
 *.txt        text eol=crlf

@@ -36,7 +36,7 @@
 /*                                                               */
 /* Version 3.20 by Howard Wulf, AF5NE                            */
 /*                                                               */
-/* Version 3.20A by Ken Martin                                   */
+/* Version 3.20b by Ken Martin                                   */
 /*                                                               */
 /*---------------------------------------------------------------*/
 
@@ -83,11 +83,11 @@ static char *Banner[] = {
   "                                    ##     ## ##     ## ##    ##  ##  ##    ##",
   "                                    ########  ##     ##  ######  ####  ###### ",
   "                                                                              ",
-  "Bywater BASIC Interpreter, version 3.20A                                      ",
+  "Bywater BASIC Interpreter, version 3.20b                                      ",
   "Copyright (c) 1993, Ted A. Campbell                                           ",
   "Copyright (c) 1995-1997  , Jon B. Volkoff                                     ",
   "Copyright (c) 2014-2017  , Howard Wulf, AF5NE                                 ",
-  "Copyright (c) 11/2019    , Ken Martin                                         ",
+  "              2019-2020  , Ken Martin                                         ",
   "                                                                              ",
   NULL
 };
@@ -104,6 +104,7 @@ bwb_initialize_warnings (void)
   {
     ERROR4[i] = NULL;
   }
+  /* Error code tree */
   ERROR4[1] = "NEXT without FOR";
   ERROR4[2] = "Syntax error";
   ERROR4[3] = "RETURN without GOSUB";

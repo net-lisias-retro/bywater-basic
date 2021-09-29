@@ -3,6 +3,10 @@
 /* Originally written in HP 2000 BASIC by David Lance Robinson, 1977 */
 /* Adapted to MS BASIC and translated to C 4/1995 by Jon B. Volkoff  */
 /* (eidetics@cerf.net)                                               */
+/*                                                                   */
+/* Some changes 04-2020 Ken. Re cp or copy and input terminator     */
+/*                           when compiling under DOS use -DMSDOS    */
+/*                           And fgets under Ubuntu.                 */
 /*-------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -15,10 +19,12 @@
 int instr();
 char *midstr1();
 char *midstr2();
+char *myfget;
 void binary_search(void);
 
 int f2, l2, n, x;
 int sidx[MAX_LINE_COUNT][2];
+int myretn;
 char rstr[MAX_LINE_LENGTH];
 
 int main(argc, argv)
@@ -39,16 +45,16 @@ int main(argc, argv)
 
    f = 1;
 
-   printf("Version 12/13/2019\n");
+   printf("Version 04/30/2020\n");
 
    if (argc > 1) strcpy(pstr, argv[1]);
    else
    {
       printf("Program in file? ");
-      fgets(pstr,MAX_LINE_LENGTH, stdin);
+      myfget=fgets(pstr,MAX_LINE_LENGTH, stdin);
       if (strchr(pstr, '\n') != NULL)
         {
-           pstr[strlen(pstr)-1] = '\0';
+           pstr[strlen(pstr)-1] = '\0'; /* NULL terminate input. Ken */
         }
 
    }
@@ -69,6 +75,7 @@ int main(argc, argv)
 #endif
 
    fdout = fopen(pstr, "w");
+   /* After editfl is created it is left behind. Ken */
    if (fdout == NULL)
    {
       printf("Unable to open temporary file editfl for output\n");
@@ -95,7 +102,7 @@ int main(argc, argv)
             }
             else
             {
-              printf("Too many lines\n");
+              printf("Too many lines. Over %d\n",MAX_LINE_COUNT);
               exit(1);
             }
             sidx[s][0] = n;
@@ -120,13 +127,14 @@ int main(argc, argv)
    }
    fclose(fdin);
    
-   strcpy(pstr, "");
-
    if (s == 0)
    {
+      printf("Programs must start with a number in column 1\n");
       printf("NO PROGRAM IS IN THE FILE!\n");
       exit(1);
    }
+
+   strcpy(pstr, "");
 
    for (l = 1; l <= s; l++)
       sidx[l][1] = sidx[l][0];
@@ -150,7 +158,7 @@ int main(argc, argv)
       skip = 0;
       bp = 0;
       printf("RENUMBER-");
-      fgets(pstr,MAX_LINE_LENGTH,stdin);
+      myfget=fgets(pstr,MAX_LINE_LENGTH,stdin);
       p = strlen(pstr);
 
       if (g == 0)
@@ -297,9 +305,9 @@ int main(argc, argv)
  */
 
    printf("VERIFY? N or n cancels:");
-   fgets(pstr,MAX_LINE_LENGTH,stdin);
+   myfget=fgets(pstr,MAX_LINE_LENGTH,stdin);
    v1 = 0;
-   if (strcmp(midstr2(pstr, 1, 1), "N") == 0) v1 = 1;
+   if (strcmp(midstr2(pstr, 1, 1), "N") == 0) v1 = 1; /* Except n or N. Ken */
    if (strcmp(midstr2(pstr, 1, 1), "n") == 0) v1 = 1;
 
    if (v1 == 1) {
@@ -374,6 +382,7 @@ int main(argc, argv)
                }
                if (skip == 0) b1 = strlen(pstr);
 
+	       /* GOSub , GOTo , IF. Ken */
                t = instr("GOSGOTIF ON RESRET", midstr2(pstr, b, 3));
 
                temp = (t + 5)/3;
@@ -508,15 +517,16 @@ int main(argc, argv)
    fclose(fdin);
    fclose(fdout);
 
+/* 11-2019 Ken */
 #if !defined(__MVS__) && !defined(__CMS__) && !defined(MSDOS)
    tempstr[strlen(tempstr)] = '\0';
-   sprintf(tempstr, "cp editfl %s", f9str);
-   system(tempstr);
+   sprintf(tempstr, "cp editfl %s", f9str); /* Linux type systems use cp. Ken */
+   myretn=system(tempstr);
 #endif
 #if defined(MSDOS)
    tempstr[strlen(tempstr)] = '\0';
-   sprintf(tempstr, "copy editfl %s", f9str);
-   system(tempstr);
+   sprintf(tempstr, "copy editfl %s", f9str); /* MSDOS no cp command. Ken */
+   myretn=system(tempstr);
 #endif
 
    return (0);
