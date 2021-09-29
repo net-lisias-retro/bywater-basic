@@ -1,3 +1,12 @@
+# compile artifcats
 *.o
 /bwbasic
 /renum
+
+# maintainer artifacts
+editfl
+editfl.bas
+*.geany
+*.orig
+*.rej
+

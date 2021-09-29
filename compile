@@ -1,0 +1,35 @@
+echo "12/13/2019 Ken. Works under Ubuntu Linux 18.04, 19.10"
+echo "Ubuntu Mate 20.04 Debian 10 and Ubuntu under Windows WSL."
+echo " "
+rm -f bwbasic renum
+echo "Compile in progress..."
+gcc -ansi -o bwbasic bw*.c -lm
+gcc -ansi -o renum renum.c -lm
+dir -l bwbasic renum
+echo " "
+echo -e "Be sure you are NOT running this as root. You are ($USER).\a"
+echo -e -n "Results look OK?? If yes press ENTER otherwise press Ctrl/c: \a"
+read j
+echo " "
+echo "Copying in progress"
+sudo cp bwbasic /usr/local/bin/bwbasic
+sudo cp bwbasic.png /usr/share/pixmaps/bwbasic.png
+sudo cp renum /usr/local/bin/renum
+echo "Setting up mode and ownership to root."
+sudo chmod 755 /usr/local/bin/bwbasic
+sudo chown root /usr/local/bin/bwbasic
+sudo chmod 755 /usr/local/bin/renum
+sudo chown root /usr/local/bin/renum
+echo "Copying Desktop entry and icon for bwbasic on a GUI."
+echo "Entry should appear on the Desktop for $USER"
+sudo cp bwbasic.desktop /home/$USER/Desktop/.
+echo "Setting up mode and ownership for desktop entry for $USER"
+sudo chmod 777 /home/$USER/Desktop/bwbasic.desktop
+sudo chown $USER /home/$USER/Desktop/bwbasic.desktop
+echo "Copying completed"
+echo " "
+echo "You should now be able to run bwbasic from the command line or desktop."
+echo "And use  renum  (renumbering tool) from the command line."
+echo " "
+echo -e "-- Done --\a"
+
