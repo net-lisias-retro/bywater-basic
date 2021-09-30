@@ -712,25 +712,30 @@ execute_profile (char *FileName)
  *    script will happen.
  *
  *    1 to open [profile.bas]
- *    2 to open [/home/$USER/profile.bas]
- *    3 to open [/etc/profile.bas]
+ *    2 to open [$HOME/profile.bas]
+ *    3 to open [$HOME/.profile.bas] - because ChipMaster doesn't like clutter
+ *    4 to open [/etc/profile.bas]
  *                            */
-  char pname[1024];
-  pname[0]=pname[sizeof(pname)-1]=0;
-  profile = fopen (FileName, "r");
+  char home[1024];   home[0]=home[sizeof(home)-1]=0;
+  char pname[1024]; pname[0]=pname[sizeof(pname)-1]=0;
+  profile = fopen(FileName, "rt");
   if(profile == NULL) {
-    strncpy(pname, getenv("HOME"), sizeof(pname)-1);
-    if(pname[0]) {
-      strncat(strcat(pname, "/"), FileName, sizeof(pname)-strlen(pname)-1);
-      profile = fopen (pname, "r");
+    strncpy(home, getenv("HOME"), sizeof(home)-1);
+    if(home[0]) {
+      snprintf(pname, sizeof(pname)-1, "%s/%s", home, FileName);
+      profile = fopen (pname, "rt");
+    }
+    if(profile == NULL) {
+      snprintf(pname, sizeof(pname)-1, "%s/.%s", home, FileName);
+      profile = fopen (pname, "rt");
     }
   }
   if(profile == NULL) {
-    strncat(strcpy(pname, "/etc/"), FileName, sizeof(pname)-6);
-    profile = fopen(pname, "r");
+    snprintf(pname, sizeof(pname)-1, "/etc/%s", FileName);
+    profile = fopen(pname, "rt");
   }
 #else
-  profile = fopen (FileName, "r");
+  profile = fopen (FileName, "rt");
 #endif
 /* End 20200806 Patch */
 
