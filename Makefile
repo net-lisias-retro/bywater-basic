@@ -28,11 +28,11 @@ bwbasic:
 
 # bwbasic and renum runtime. editfl temp file created by renum
 clean:
-	rm -f *.o bwbasic renum editfl core
+	rm *.o bwbasic renum editfl core || true
 
 install:
 	ls -l bwbasic renum
-	cp bwbasic renum bwbasic.sh $(DEST)/.
+	cp bwbasic renum GUI/bwbasic.sh $(DEST)/.
 	ls -l $(DEST)/bwbasic $(DEST)/renum $(DEST)/bwbasic.sh
 	mkdir -p /usr/share/bwbasic
 	mkdir -p /usr/share/doc/cbwbasic

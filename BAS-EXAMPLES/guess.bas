@@ -1,4 +1,6 @@
+   10 rem 12/13/2019 Ken  guess a number game
   100 REM GUESSING GAME
+  110 SHELL "cls"
   120 PRINT "GUESS THE NUMBER BETWEEN 1 AND 100."
   140 LET X = INT(100*RND(0)+1)
   150 LET N = 0
