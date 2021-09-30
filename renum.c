@@ -4,11 +4,22 @@
 /* Adapted to MS BASIC and translated to C 4/1995 by Jon B. Volkoff  */
 /* (eidetics@cerf.net)                                               */
 /*                                                                   */
-/* Some changes 04-2020 Ken. Re cp or copy and input terminator     */
+/* Some changes 04-2020 Ken. Re cp or copy and input terminator      */
 /*                           when compiling under DOS use -DMSDOS    */
 /*                           And fgets under Ubuntu.                 */
+/*                                                                   */
+/* 8-2021 Ken.  Saves original program in editfl.bas                 */
+/*              Cleans up editfl                                     */
+/*              Handles both upper and lower case GOTo GOSub IF THEN */
+/*               ON , PRInt , SHEll and INPut                        */
+/*              Trims leading white space on line numbers.           */
+/*               Thanks Chipmaster                                   */
+/*                                                                   */
+/*              Compile as    gcc renum.c -o renum                   */
 /*-------------------------------------------------------------------*/
-
+/* *WARN* This code is still broken. Use at your own risk! Its taken
+          more effort than writing it from scratch. I'm not putting
+          any more effort into it. -- ChipMaster */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,6 +32,8 @@ char *midstr1();
 char *midstr2();
 char *myfget;
 void binary_search(void);
+void trim(char *s);
+char *umids(char *astr, int start, int len);
 
 int f2, l2, n, x;
 int sidx[MAX_LINE_COUNT][2];
@@ -37,20 +50,20 @@ int main(argc, argv)
    char pstr[MAX_LINE_LENGTH];
    char sstr[MAX_LINE_LENGTH];
    char f9str[MAX_LINE_LENGTH];
-   char s9str[MAX_LINE_LENGTH];
+   char s9str;
    char tempstr[MAX_LINE_LENGTH  + 64];
    FILE *fdin;
    FILE *fdout;
-   int skip, bp, temp, getout, disp_msg;
+   int skip, bp, temp, getout, disp_msg , xken;
 
    f = 1;
 
-   printf("Version 04/30/2020\n");
+   printf("Version 08/12/2021 -------------------------->> For Testing\n");
 
    if (argc > 1) strcpy(pstr, argv[1]);
    else
    {
-      printf("Program in file? ");
+      printf("Program in file (basic bas file)? ");
       myfget=fgets(pstr,MAX_LINE_LENGTH, stdin);
       if (strchr(pstr, '\n') != NULL)
         {
@@ -60,10 +73,18 @@ int main(argc, argv)
    }
    if (strlen(pstr) == 0) strcpy(pstr, "0.doc");
 
-   fdin = fopen(pstr, "r");
+   if (strcmp(pstr,"editfl.bas") == 0)
+    {
+      printf("Can not use editfl.bas as progran in file.\n");
+      printf("editfl.bas is a backup original of the last run.\n");
+      printf("Exiting.\n");
+      exit(1);
+    }
+
+   fdin = fopen(pstr, "rt");
    if (fdin == NULL)
    {
-      printf("Unable to open input file\n");
+      printf("Unable to open input file. Exiting.\n");
       exit(1);
    }
    strcpy(f9str, pstr);
@@ -74,21 +95,22 @@ int main(argc, argv)
    strcpy(pstr, "editfl");
 #endif
 
-   fdout = fopen(pstr, "w");
+   fdout = fopen(pstr, "wt");
    /* After editfl is created it is left behind. Ken */
    if (fdout == NULL)
    {
-      printf("Unable to open temporary file editfl for output\n");
+      printf("Unable to open temporary file editfl for output.\n");
+      printf("Exiting.\n");
       exit(1);
    }
 
    /* Main program begins here */
    s = 0; l2 = 0; d = 0;
    f2 = 10000;
-   printf ("PLEASE WAIT A FEW SECONDS!\n");
+   printf ("PLEASE WAIT A FEW SECONDS! READING INPUT.\n");
    while (fgets(pstr, MAX_LINE_LENGTH, fdin) != NULL)
    {
-      pstr[strlen(pstr) - 1] = '\0';
+      trim(pstr);
       p = instr(pstr, " ");
       if (p != 0 && p <= 5)
       {
@@ -103,6 +125,7 @@ int main(argc, argv)
             else
             {
               printf("Too many lines. Over %d\n",MAX_LINE_COUNT);
+              printf("Exiting.\n");
               exit(1);
             }
             sidx[s][0] = n;
@@ -115,6 +138,8 @@ int main(argc, argv)
                {
                   printf("ERROR !!! MORE THAN ONE STATEMENT FOR A ");
                   printf("STATEMENT NUMBER\n");
+                  printf("Line #%s\n",pstr);
+                  printf("Exiting.\n");
                   exit(1);
                }
 
@@ -126,11 +151,12 @@ int main(argc, argv)
       }
    }
    fclose(fdin);
-   
+
    if (s == 0)
    {
-      printf("Programs must start with a number in column 1\n");
+      printf("Programs must start with a number in column 1.\n");
       printf("NO PROGRAM IS IN THE FILE!\n");
+      printf("Exiting.\n");
       exit(1);
    }
 
@@ -150,7 +176,7 @@ int main(argc, argv)
    {
       if (disp_msg == 1)
       {
-         printf("RENUMBER (-starting number (,interval (,first statement ");
+         printf("Enter (-starting number (,interval (,first statement ");
          printf("(,last))))\n");
          disp_msg = 0;
       }
@@ -260,6 +286,7 @@ int main(argc, argv)
          if (sidx[r][1] >= f1 && sidx[r][1] <= l1)
          {
             printf("SEQUENCE NUMBER OVERLAP\n");
+            printf("Exiting.\n");
             exit(1);
          }
          else {}
@@ -311,14 +338,14 @@ int main(argc, argv)
    if (strcmp(midstr2(pstr, 1, 1), "n") == 0) v1 = 1;
 
    if (v1 == 1) {
-	   printf("Operation cancelled\n");
-   	   exit(1);
+	   printf("Operation cancelledi.\n");
+   	 exit(1);
    }
 
-   fdin = fopen(f9str, "r");
+   fdin = fopen(f9str, "rt");
    if (fdin == NULL)
    {
-      printf("Unable to open input file\n");
+      printf("Unable to open input file.\n");
       exit(1);
    }
 
@@ -327,13 +354,14 @@ int main(argc, argv)
 
    while (fgets(pstr, MAX_LINE_LENGTH, fdin) != NULL)
    {
-      pstr[strlen(pstr) - 1] = '\0';
-      b = instr(pstr, " ");
-      if (b != 0)
+      trim(pstr);
+      if (*pstr)
       {
-         n = atoi(midstr2(pstr, 1, b));
-         if (n != 0)
+         b = 0;
+         if (*pstr>='0' && *pstr<='9')
          {
+            b = instr(pstr, " ");
+            n = atoi(midstr2(pstr, 1, b));
             if (n >= f6 && n <= l6)
             {
                binary_search();
@@ -345,168 +373,170 @@ int main(argc, argv)
                }
             }
             b++;
+         }
 
-            /*-------------------------------------------------------------*/
-            /* There are differences, of course, between processing for HP */
-            /* BASIC and MS BASIC.                                         */
-            /*                                                             */
-            /* CONVERT, PRINT USING, and MAT PRINT USING changes are not   */
-            /* applicable in MS BASIC.                                     */
-            /*                                                             */
-            /* Had to also add capability for multiple statements here.    */
-            /*-------------------------------------------------------------*/
+         /*-------------------------------------------------------------*/
+         /* There are differences, of course, between processing for HP */
+         /* BASIC and MS BASIC.                                         */
+         /*                                                             */
+         /* CONVERT, PRINT USING, and MAT PRINT USING changes are not   */
+         /* applicable in MS BASIC.                                     */
+         /*                                                             */
+         /* Had to also add capability for multiple statements here.    */
+         /*-------------------------------------------------------------*/
 
-            while(1)
+         while(1)
+         {
+            /* ChipMaste-20210817 skip leading WS to start on a token */
+            while(pstr[b-1]==' ' || pstr[b-1]=='\t') b++;
+            xken = 0;
+            if (strcmp(umids(pstr, b, 3), "REM") == 0 || pstr[b-1]=='\'')
+               break;
+            f9 = 0;
+            skip = 0;
+            b1 = strlen(pstr);
+            for (x9 = b-1; x9 < b1; x9++)
             {
-               if (strcmp(midstr2(pstr, b, 3), "REM") == 0 ||
-               strcmp(midstr2(pstr, b, 1), "'") == 0) break;
-
-               f9 = 0;
-               skip = 0;
-               for (x9 = b; x9 <= strlen(pstr); x9++)
+               if (pstr[x9] == '"')
                {
-                  if ((char)(*midstr2(pstr, x9, 1)) == 34) 
-                  {
-                     if (f9 == 0)
-                        f9 = 1;
-                     else
-                        f9 = 0;
+                  f9 = !f9;
+               }
+               else if (f9 == 0 && pstr[x9] == ':')
+               {
+                  b1 = x9; /* NOTE: most of this code runs @ BASIC's 1 base */
+               }
+            }
+
+     /* GOSub , GOTo , IF , ON , RESet , RETurn , SHEll , PRInt , INPut Ken */
+     /* 2       3      4    5    6       7        8       9       10        */
+            t = instr("GOSGOTIF ON RESRETSHEPRIINP", umids(pstr, b, 3));
+            temp = (t + 5)/3;
+            if (temp != 1)
+            {
+               if (temp == 2 || temp == 3 || temp == 4 ||
+                   temp == 6 || temp == 7 || temp == 8 ||
+                   temp == 9 || temp ==10 )
+               {
+                /*---------------------------------------------------------*/
+                /* Change GOSub, GOTo, IF , REStore, RETurn, SHEll         */
+                /* PRInt , INPut                                           */
+                /* routine.                                                */
+                /* Go word by word through the statement.                  */
+                /*---------------------------------------------------------*/
+                  getout = 0;
+                  p8 = b;
+                  s9str=' ';
+               }
+               else if (temp == 5) /* 5 = ON as in ON ERROR */
+               {
+                  /*---------------------------------------------------*/
+                  /* Change ON event/expression GOSUB/GOTO routine.    */
+                  /* Find starting point appropriate to this statement */
+                  /* type. There are several variations of the ON ...  */
+                  /* statments but only the ones with "GOTO" or        */
+                  /* "GOSUB" get renumbered. ANd they can have         */
+                  /* multiple line numbers.                            */
+                  /*---------------------------------------------------*/
+                  getout = 1;
+                  x9 = instr(pstr+b-1, " GOTO ");
+                  if(x9) {
+                    x9+=5;
+                  } else {
+                     x9 = instr(pstr+b-1, " GOSUB ");
+                     if(x9) x9+=6;
                   }
-                  else if (strcmp(midstr2(pstr, x9, 1), ":") == 0 &&
-                  f9 == 0)
-                  {
-                     b1 = x9 - 1;
-                     skip = 1;
-                     break;
+                  if(x9) {
+                     p8 = x9+b;
+                     getout = 0;
+                     s9str=',';
                   }
                }
-               if (skip == 0) b1 = strlen(pstr);
+               /* End of scanning statement                          */
 
-	       /* GOSub , GOTo , IF. Ken */
-               t = instr("GOSGOTIF ON RESRET", midstr2(pstr, b, 3));
-
-               temp = (t + 5)/3;
-               if (temp != 1)
+               /* Start looping here */
+               if (getout == 0) while(1)
                {
-                  if (temp == 2 || temp == 3 || temp == 4 || temp == 6 ||
-                  temp == 7)
+                  f9 = 0;
+                  skip = 0;
+                  /* ChipMaster-20210816 skip leading WS */
+                  while(p8<b1 && (pstr[p8-1]==' ' || pstr[p8-1]=='\t'))
+                    p8++;
+                  for (x9 = p8-1; x9 < b1; x9++)
                   {
-                     /*-------------------------------------------------*/
-                     /* Change GOSUB, GOTO, IF, RESTORE, RESUME, RETURN */
-                     /* routine.                                        */
-                     /* Go word by word through the statement.          */
-                     /*-------------------------------------------------*/
-                     getout = 0;
-                     p8 = b;
-                     strcpy(s9str, " ");
-                  }
-                  else if (temp == 5)
-                  {
-                     /*---------------------------------------------------*/
-                     /* Change ON event/expression GOSUB/GOTO routine.    */
-                     /* Find starting point appropriate to this statement */
-                     /* type.                                             */
-                     /*---------------------------------------------------*/
-                     getout = 1;
-                     for (x9 = b1; x9 >= b; x9--)
+                     /* Is a quote " ? */
+                     if (pstr[x9] == '"')
                      {
-                        if (strcmp(midstr2(pstr, x9, 1), " ") == 0)
-                        {
-                           p8 = x9 + 1;
-                           getout = 0;
-                           break;
-                        }
+                        f9 = !f9;
                      }
-
-                     if (getout == 0) strcpy(s9str, ",");
+                     else if (f9 == 0 && pstr[x9]==s9str)
+                     {
+                        p9 = x9;
+                        skip = 1;
+                        break;
+                     }
+                  }
+                  if (skip == 0) p9 = b1;
+                  skip = 0;
+                  for (x9 = p8-1; x9 < p9; x9++)
+                  {
+                     /* Is not a digit 0 to 9 ?  */
+                     if (pstr[x9] < '0' || pstr[x9] > '9')
+                     {
+                        skip = 1;
+                        break;
+                     }
                   }
 
-                  /* Start looping here */
-                  if (getout == 0) while(1)
+                  if (skip == 0)
                   {
-                     f9 = 0;
-                     skip = 0;
-                     for (x9 = p8; x9 <= b1; x9++)
+                     /*---------------------*/
+                     /* Found a line number */
+                     /*---------------------*/
+                     n = atoi(midstr2(pstr, p8, p9 - p8 + 1));
+                     if (n != 0)
                      {
-                        if ((char)(*midstr2(pstr, x9, 1)) == 34)
+                        if (n >= f6 && n <= l6)
                         {
-                           if (f9 == 0)
-                              f9 = 1;
-                           else
-                              f9 = 0;
-                        }
-                        else if (strcmp(midstr2(pstr, x9, 1), s9str) == 0 &&
-                        f9 == 0)
-                        {
-                           p9 = x9 - 1;
-                           skip = 1;
-                           break;
-                        }
-                     }
-                     if (skip == 0) p9 = b1;
-
-                     skip = 0;
-                     for (x9 = p8; x9 <= p9; x9++)
-                     {
-                        a = (char)(*midstr2(pstr, x9, 1));
-                        if (a < 48 || a > 57)
-                        {
-                           skip = 1;
-                           break;
-                        }
-                     }
-
-                     if (skip == 0)
-                     {
-                        /*---------------------*/
-                        /* Found a line number */
-                        /*---------------------*/
-                        n = atoi(midstr2(pstr, p8, p9 - p8 + 1));
-                        if (n != 0)
-                        {
-                           if (n >= f6 && n <= l6)
+                           binary_search();
+                           if (x == 0)
                            {
-                              binary_search();
-                              if (x == 0)
+                              if (p9 == strlen(pstr))
                               {
-                                 if (p9 == strlen(pstr))
-                                 {
-                                    strcpy(tempstr, midstr2(pstr, 1, p8 - 1));
-                                    strcat(tempstr, rstr);
-                                    strcpy(pstr, tempstr);
-                                 }
-                                 else
-                                 {
-                                    strcpy(tempstr, midstr2(pstr, 1, p8 - 1));
-                                    strcat(tempstr, rstr);
-                                    strcat(tempstr, midstr1(pstr, p9 + 1));
-                                    strcpy(pstr, tempstr);
-                                 }
-
-                                 /*-----------------------------------*/
-                                 /* Adjust indices to account for new */
-                                 /* substring length, if any.         */
-                                 /*-----------------------------------*/
-                                 d9 = strlen(rstr) - (p9 - p8 + 1);
-                                 p9 = p9 + d9;
-                                 b1 = b1 + d9;
+                                 strcpy(tempstr, midstr2(pstr, 1, p8 - 1));
+                                 strcat(tempstr, rstr);
+                                 strcpy(pstr, tempstr);
                               }
+                              else
+                              {
+                                 strcpy(tempstr, midstr2(pstr, 1, p8 - 1));
+                                 strcat(tempstr, rstr);
+                                 strcat(tempstr, midstr1(pstr, p9 + 1));
+                                 strcpy(pstr, tempstr);
+                              }
+
+                              /*-----------------------------------*/
+                              /* Adjust indices to account for new */
+                              /* substring length, if any.         */
+                              /*-----------------------------------*/
+                              d9 = strlen(rstr) - (p9 - p8 + 1);
+                              p9 = p9 + d9;
+                              b1 = b1 + d9;
                            }
                         }
                      }
-
-                     p8 = p9 + 2;
-                     if (p8 > b1) break;
                   }
-               }
 
-               /*--------------------------------------------------*/
-               /* No more words to process in the statement, go to */
-               /* next statement.                                  */
-               /*--------------------------------------------------*/
-               if (b1 == strlen(pstr)) break;
-               b = b1 + 2;
+                  p8 = p9 + 2;
+                  if (p8 > b1) break;
+               }
             }
+
+            /*--------------------------------------------------*/
+            /* No more words to process in the statement, go to */
+            /* next statement.                                  */
+            /*--------------------------------------------------*/
+            if (b1 == strlen(pstr)) break;
+            b = b1 + 2;
          }
       }
 
@@ -520,12 +550,22 @@ int main(argc, argv)
 /* 11-2019 Ken */
 #if !defined(__MVS__) && !defined(__CMS__) && !defined(MSDOS)
    tempstr[strlen(tempstr)] = '\0';
+   sprintf(tempstr, "cp %s editfl.bas", f9str);
+   myretn=system(tempstr);
+   printf("\nOriginal basic program is stored in editfl.bas\n\n");
    sprintf(tempstr, "cp editfl %s", f9str); /* Linux type systems use cp. Ken */
+   myretn=system(tempstr);
+   sprintf(tempstr, "rm editfl");
    myretn=system(tempstr);
 #endif
 #if defined(MSDOS)
    tempstr[strlen(tempstr)] = '\0';
-   sprintf(tempstr, "copy editfl %s", f9str); /* MSDOS no cp command. Ken */
+   sprintf(tempstr, "copy %s editfl.bas", f9str); /* MSDOS no cp command. Ken */
+   myretn=system(tempstr);
+   printf("\nOriginal basic program is stored in editfl.bas\n\n");
+   sprintf(tempstr, "copy editfl %s", f9str);
+   myretn=system(tempstr);
+   sprintf(tempstr, "del editfl");
    myretn=system(tempstr);
 #endif
 
@@ -533,22 +573,24 @@ int main(argc, argv)
 }
 
 
+/* 20210826 ChipMaster - make a case insensitive compare */
 int instr(astr, bstr)
    char *astr, *bstr;
 {
-   char *p;
+   char *p, *compa, *compb, ca, cb;
    int q;
 
-   p = strstr(astr, bstr);
-   if (p == NULL)
-   {
-       q = 0;
+   for(p=astr; *p; p++) {
+      for(compa=p, compb=bstr; *compa && *compb; compa++, compb++) {
+         /* if lcase letter make ucase for comparison */
+         ca = *compa>='a' && *compa<='z' ? *compa&95 : *compa;
+         cb = *compb>='a' && *compb<='z' ? *compb&95 : *compb;
+         if(ca!=cb) break; /* no match */
+      }
+      if(!*compb) return p-astr+1; /* ooh! we matched bstr */
+      if(!*compa) return 0; /* unsearched astr is now shorter than bstr */
    }
-   else
-   {
-       q = (p - astr) + 1;
-   }
-   return q;
+   return 0; /* JIC */
 }
 
 
@@ -582,6 +624,24 @@ char *midstr2(astr, start, len)
 }
 
 
+/* 2021-08-15 ChipMaster: a MID$() to aid with case insensitivity */
+char *umids(char *astr, int start, int len) {
+   static char buf[MAX_LINE_LENGTH];
+   char *p;
+
+   buf[0]=0;
+   if(start<1 || len<1) return buf; /* JIC */
+   for(start--; start; start--) if(!*astr++) return buf;
+   if(len>MAX_LINE_LENGTH-1) len = MAX_LINE_LENGTH-1; /* have to leave room for \0 */
+   for(p=buf; *astr && len; len--) {
+      if(*astr>='a' && *astr<='z') *p++=(*astr++ & 95); /* UCASE it */
+      else                         *p++=*astr++;
+   }
+   *p=0;
+   return buf;
+}
+
+
 void binary_search(void)
 {
    int f5, l5;
@@ -592,7 +652,7 @@ void binary_search(void)
    while(1)
    {
       int m;
-      
+
       m = (f5 + l5)/2;
 
       if (sidx[m][0] == n)
@@ -616,3 +676,16 @@ void binary_search(void)
    }
 }
 
+/* Chipmaster 8-2021 */
+
+void trim(char *s) {
+  char *p, *e;
+  /* First trim EOL WS */
+  for(p=s, e=0; *p; p++) if(*p>' ') e=p;
+  if(e) *++e=0;
+  /* Then trim BOL WS */
+  for(p=s; *p && *p<=' '; p++) ;
+  if(p==s) return;
+  for(; *p; p++) *s++=*p;
+  *s=0;
+}
