@@ -2177,6 +2177,15 @@ bwx_Error (int ERR, char *ErrorMessage)
     My->ERL = NULL;                    /* bwx_Error, ERR == 0 */
     bwb_strcpy (My->ERROR4, "");       /* bwx_Error, ERR == 0 */
     return FALSE;
+#ifdef CMDEBUG
+  case 57: /* ChipMaster testing ... */
+    fprintf(stderr, "I/O Error:  feof=%d ferror=%d errno=%d\n",
+      (int)feof(My->CurrentFile->cfp),
+      (int)ferror(My->CurrentFile->cfp),
+      errno
+    );
+    break;
+#endif
   case 6:                         /* WARN_OVERFLOW */
   case 11:                        /* WARN_DIVISION_BY_ZERO */
   case 15:                        /* WARN_STRING_TOO_LONG */
