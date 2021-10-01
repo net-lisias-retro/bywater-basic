@@ -21,14 +21,20 @@ LIB=-lm
 DEST=/usr/bin
 # HOME=$HOME
 
-bwbasic:
-	$(CC) $(CFLAGS) -o bwbasic bw*.c $(LIB) -DLINUX
-	$(CC) $(CFLAGS) -o renum renum.c $(LIB) 
+.PHONY: all
+all: bwbasic renum
 	ls -l bwbasic renum
+
+bwbasic: bw*.c bw*.h
+	$(CC) $(CFLAGS) -o bwbasic bw*.c $(LIB) -DLINUX
+
+renum: renum.c
+	$(CC) $(CFLAGS) -o renum renum.c $(LIB) 
+	
 
 # bwbasic and renum runtime. editfl temp file created by renum
 clean:
-	rm *.o bwbasic renum editfl core || true
+	rm *.o bwbasic renum editfl editfl.bas core || true
 
 install:
 	ls -l bwbasic renum
