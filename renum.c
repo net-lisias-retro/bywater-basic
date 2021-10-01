@@ -58,7 +58,7 @@ int main(argc, argv)
 
    f = 1;
 
-   printf("Version 08/12/2021 -------------------------->> For Testing\n");
+   printf("Version 08/12/2021 Known issues. See version renum2.c\n");
 
    if (argc > 1) strcpy(pstr, argv[1]);
    else
@@ -602,7 +602,8 @@ char *midstr1(astr, start)
    char *startptr;
 
    strcpy(tempstr, astr);
-   startptr = (char *)((long)(tempstr) + start - 1);
+   startptr = &tempstr[start - 1];
+
 
    return startptr;
 }
@@ -616,8 +617,8 @@ char *midstr2(astr, start, len)
    char *startptr, *endptr;
 
    strcpy(tempstr, astr);
-   startptr = (char *)((long)(tempstr) + start - 1);
-   endptr = (char *)((long)(tempstr) + start + len - 1);
+   startptr = &tempstr[start - 1];
+   endptr = ((tempstr) + start + len - 1);
    strcpy(endptr, "\0");
 
    return startptr;
