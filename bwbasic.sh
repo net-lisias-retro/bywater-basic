@@ -4,8 +4,8 @@
 [ -z "$BWBASIC" ]   && BWBASIC="$HOME/bwbasic"
 [ ! -d "$BWBASIC" ] && mkdir "$BWBASIC"
 cd "$BWBASIC"
-trap 'echo " "; echo "PROGRAM INTERRUPTED"; echo "Press Enter "; read j; exit 1' INT
+trap '/bin/echo " "; /bin/echo -e "PROGRAM INTERRUPTED. \007Press Enter "; read j; exit 1' INT
 bwbasic "$@"
 # -n = no newline -e interpret special octel numbers \007 = Bell
-/bin/echo -n -e "Bwbasic terminated. Press Enter \007"
+/bin/echo -n "Bwbasic terminated. Press Enter "
 read j
