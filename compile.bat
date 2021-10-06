@@ -1,10 +1,12 @@
 @echo off
-echo 9-20-2021 Ken. bwbasic. Works under Windows 10 using gcc 7.4.0
-echo                              and gcc 8.1.0 64 bit
-echo            and Windows 11 using tdm64-gcc-5.1.0-2 gcc 5.1.0 32 and 64 bit
-echo https://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Installer/tdm64-gcc-5.1.0-2.exe/download
-echo                           gcc 5.1.0 works with XP, 7 and 10
+echo 10-02-2021 Ken. bwbasic  compile.bat
+echo.
+echo                     Tested under Windows XP , 7 ,10 and 11
 echo                             added notes for 32 bit
+echo.
+echo Source - https://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Installer/tdm64-gcc-5.1.0-2.exe/download
+echo.
+echo                           Tested under bwbasic-3.20d
 echo.
 echo                                      Wait
 echo.

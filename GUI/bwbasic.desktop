@@ -4,8 +4,9 @@ Encoding=UTF-8
 Name=Bywater BASIC
 GenericName=Bywater BASIC
 Type=Application
-Exec=<File Location Example /home/username/bin/>bwbasic.sh
-Icon=<File Location Example /home/username/png/>bwbasic.png
+Exec=/usr/local/bin/bwbasic.sh
+Icon=/usr/share/pixmaps/bwbasic.png
 StartupNotify=true
 Terminal=true
 Categories=Development
+

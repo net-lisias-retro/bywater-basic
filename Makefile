@@ -1,6 +1,9 @@
 #
-# Makefile for bwbasic on Linux 8-9-2020
+# Makefile for bwbasic on Linux 10-02-2021 kenunix
 # Now version bwbasic-3.20d
+#
+# 10-02-2021 kenunix add addgui and delgui and corrected typos.
+#            set DEST to /usr/local/bin
 #
 # Tested on Ubuntu 18.04 Had to fix compatabily issues
 #           Ubuntu 20.04 Had to fix compatabily issues
@@ -10,7 +13,7 @@
 #           Linux Mint LMDE4
 #           Linux Lite 4.8
 #
-#           ken.at.github@gmail.com
+#           ken.unix.guy@gmail.com
 #
 CC=gcc
 # If running on a Beaglebone you might want to replace
@@ -18,7 +21,7 @@ CC=gcc
 # to have a smaller runtime size
 CFLAGS=-s -ansi
 LIB=-lm
-DEST=/usr/bin
+DEST=/usr/local/bin
 # HOME=$HOME
 
 .PHONY: all
@@ -32,26 +35,23 @@ renum: renum.c
 	$(CC) $(CFLAGS) -o renum renum.c $(LIB) 
 	
 
-# bwbasic and renum runtime. editfl temp file created by renum
+# bwbasic and renum runtime. editfl.bas temp file created by renum
 clean:
-	rm *.o bwbasic renum editfl editfl.bas core || true
+	rm -f *.o bwbasic renum editfl.bas core
 
 install:
 	ls -l bwbasic renum
 	cp bwbasic renum GUI/bwbasic.sh $(DEST)/.
 	ls -l $(DEST)/bwbasic $(DEST)/renum $(DEST)/bwbasic.sh
 	mkdir -p /usr/share/bwbasic
-	mkdir -p /usr/share/doc/cbwbasic
+	mkdir -p /usr/share/doc/bwbasic
 	mkdir -p /usr/share/doc/bwbasic/docs
-	mkdir -p $HOME/Desktop
 	cp BAS-EXAMPLES/*     /usr/share/bwbasic/.
 	cp DOCS/*             /usr/share/doc/bwbasic/docs/.
 	cp README READMEFIRST /usr/share/doc/bwbasic/.
 	cp COPYING            /usr/share/doc/bwbasic/.
 	cp bwbasic.png        /usr/share/pixmaps/.
 	cp bwbasic.desktop    /usr/share/applications/bwbasic.desktop 
-	# cp bwbasic.desktop    $HOME/Desktop/.
-	# chmod 666             $HOME/Desktop/bwbasic/desktop
 
 remove:
 	rm $(DEST)/bwbasic $(DEST)/renum $(DEST)/bwbasic.sh
@@ -72,4 +72,13 @@ run:
 
 runlocal:
 	./bwbasic
+
+# Must do as user not root
+addgui:
+	cp bwbasic.desktop ${HOME}/Desktop/bwbasic.desktop
+	ls -l ${HOME}/Desktop/bwbasic.desktop
+
+# Must do as user not root
+delgui:
+	rm -f ${HOME}/Desktop/bwbasic.desktop
 
