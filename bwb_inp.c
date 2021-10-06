@@ -2776,7 +2776,25 @@ bwb_LINE_INPUT (LineType * Line)
     if (fgets (tbuf, tlen, My->CurrentFile->cfp))        /* bwb_LINE_INPUT */
     {
       tbuf[tlen] = NulChar;
-      CleanTextInput (tbuf);
+      /* jaf-20211006 CleanTextInput() converts all <' ' chars to ' '. None of
+         the dialects I've used did this with `LINE INPUT ...` You could read a
+         whole file, verbatim, control codes and all (other than EOL), assuming
+         it had line breaks frequently enough. I was just going to patch
+         CleanTextInput, but it appears it may have valid uses in other
+         contexts. So lets replace the call to it with a simple EOL filter.
+         Depending on OS and compiler and since we're not opening files in
+         "text" mode we'll strip off up to two CRs or LFs. This means that CRLF
+         endings will be handled the same as LF, even on UNIX. I don't think
+         this will cause problems... I think its an advantage.
+      //CleanTextInput (tbuf); */
+      tlen=strlen(tbuf);
+      if(tlen--) {
+        if(tbuf[tlen]=='\r' || tbuf[tlen]=='\n') {
+          tlen--;
+          if(tlen>=0 && (tbuf[tlen]=='\r' || tbuf[tlen]=='\n')) tlen--;
+          tbuf[tlen+1] = NulChar;
+        }
+      }
     }
     else
     {
