@@ -5046,6 +5046,7 @@ dio_lrset (LineType * l, int rset)
        PRINT "[";A$;"]"   ' [123_789]
      */
     startpos = variant.Length - T->Length;
+    for(n=0; n<startpos; n++) variant.Buffer[n]=' ';
   }
   /* write characters to new position */
   for (n = startpos, i = 0;
@@ -5053,6 +5054,7 @@ dio_lrset (LineType * l, int rset)
   {
     variant.Buffer[n] = T->Buffer[i];
   }
+  if(rset == FALSE) while(n<variant.Length) variant.Buffer[n++]=' ';
   if (var_set (v, &variant) == FALSE)
   {
     WARN_VARIABLE_NOT_DECLARED;
