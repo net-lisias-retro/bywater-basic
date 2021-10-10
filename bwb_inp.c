@@ -162,6 +162,16 @@ CleanTextInput (char *buffer)
   }
 }
 
+void bwb_close_all() {
+    FileType *F;
+
+    for (F = My->FileHead; F != NULL; F = F->next)
+    {
+      field_close_file (F);
+      file_clear (F);
+    }
+}
+
 
 
 /***************************************************************
@@ -890,13 +900,7 @@ bwb_CLOSE (LineType * Line)
   if (line_is_eol (Line))
   {
     /* CLOSE */
-    FileType *F;
-
-    for (F = My->FileHead; F != NULL; F = F->next)
-    {
-      field_close_file (F);
-      file_clear (F);
-    }
+    bwb_close_all();
     return (Line);
   }
 

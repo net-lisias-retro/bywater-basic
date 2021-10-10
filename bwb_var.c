@@ -368,6 +368,13 @@ extern void
 var_CLEAR (void)
 {
   /*
+    Close all open file (variables)
+  */
+  /* jaf-20211010 files should be closed when variables are cleared. */
+
+  bwb_close_all();
+
+  /*
      free all variables except PRESET
    */
   VariableType *variable;

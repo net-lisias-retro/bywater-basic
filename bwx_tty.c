@@ -111,7 +111,7 @@ bwx_COLOR (int Fore, int Back)
   assert (My != NULL);
   assert (My->SYSOUT != NULL);
   assert (My->SYSOUT->cfp != NULL);
-  if (Fore < 0 || Back < 0)
+  if (Fore < 0 || Fore > 15 || Back < 0 || Back > 15)
   {
     WARN_ILLEGAL_FUNCTION_CALL;
     return;
