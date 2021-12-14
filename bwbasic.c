@@ -36,7 +36,7 @@
 /*                                                               */
 /* Version 3.20 by Howard Wulf, AF5NE                            */
 /*                                                               */
-/* Version 3.20d by Ken Martin                                   */
+/* Version 3.20f by KenUNIX & Chipmaster                         */
 /*                                                               */
 /*---------------------------------------------------------------*/
 
@@ -83,11 +83,11 @@ static char *Banner[] = {
   "                                    ##     ## ##     ## ##    ##  ##  ##    ##",
   "                                    ########  ##     ##  ######  ####  ###### ",
   "                                                                              ",
-  "Bywater BASIC Interpreter, version 3.20d                                      ",
+  "Bywater BASIC Interpreter, version 3.20f                                      ",
   "Copyright (c) 1993, Ted A. Campbell                                           ",
   "Copyright (c) 1995-1997  , Jon B. Volkoff                                     ",
   "Copyright (c) 2014-2017  , Howard Wulf, AF5NE                                 ",
-  "              2019-2020  , Ken Martin                                         ",
+  "              2019-2021  , KenUNIX & Chipmaster with fixes                    ",
   "                                                                              ",
   NULL
 };
@@ -701,7 +701,7 @@ execute_profile (char *FileName)
 
   My->NextValidLineNumber = MINLIN;
 
-#ifdef LINUX
+#ifdef HAVE_UNIX
 /* Begin 20200806 ChipMaster@YeOlPiShack.net  Patch --
  *
  *    on *nix check the current folder, user's home folder and then /etc for

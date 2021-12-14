@@ -29,7 +29,7 @@ all: bwbasic renum
 	ls -l bwbasic renum
 
 bwbasic: bw*.c bw*.h
-	$(CC) $(CFLAGS) -o bwbasic bw*.c $(LIB) -DLINUX
+	$(CC) $(CFLAGS) -o bwbasic bw*.c $(LIB)
 
 renum: renum.c
 	$(CC) $(CFLAGS) -o renum renum.c $(LIB) 

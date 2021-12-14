@@ -6,14 +6,14 @@ echo                             added notes for 32 bit
 echo.
 echo Source - https://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Installer/tdm64-gcc-5.1.0-2.exe/download
 echo.
-echo                           Tested under bwbasic-3.20d
+echo                           Tested under bwbasic-3.20f
 echo.
 echo                                      Wait
 echo.
 
 if exist *.o del *.o
 if exist bwbasic.exe del bwbasic.exe
-if exist renum.exe del renum.exe
+if exist renum2.exe del renum2.exe
 
 call stdcomp bwbasic.c
 call stdcomp bwb_int.c
@@ -33,17 +33,17 @@ call stdcomp bwd_cmd.c
 call stdcomp bwd_fun.c
 
 Rem If compiling under DOS 32 bit (gcc 5.1.0) add -m32 after -s
-gcc -s -ansi -DMSDOS -o bwbasic.exe bwb_cmd.o bwb_cnd.o bwb_dio.o bwb_exp.o bwb_fnc.o bwb_inp.o bwb_int.o bwb_prn.o bwb_stc.o bwb_str.o bwb_tbl.o bwb_var.o bwbasic.o bwd_cmd.o bwd_fun.o bwx_tty.o
+gcc -s -m32 -ansi -DMSDOS -o bwbasic.exe bwb_cmd.o bwb_cnd.o bwb_dio.o bwb_exp.o bwb_fnc.o bwb_inp.o bwb_int.o bwb_prn.o bwb_stc.o bwb_str.o bwb_tbl.o bwb_var.o bwbasic.o bwd_cmd.o bwd_fun.o bwx_tty.o
 
 Rem If compiling under DOS 32 bit (gcc 5.1.0) add -m32 after -s
-gcc -s -ansi -DMSDOS -o renum.exe renum.c 
+gcc -s -m32 -ansi -DMSDOS -o renum2.exe renum2.c 
 
-if exist "renum.exe" (
+if exist "renum2.exe" (
   echo.
-  echo Compile suceeded for renum.exe.
+  echo Compile suceeded for renum2.exe.
 ) else (
   echo.
-  echo Compile FAILED for renum.exe.
+  echo Compile FAILED for renum2.exe.
 )
 
 if exist "bwbasic.exe" (
