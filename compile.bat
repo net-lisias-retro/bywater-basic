@@ -13,7 +13,7 @@ echo.
 
 if exist *.o del *.o
 if exist bwbasic.exe del bwbasic.exe
-if exist renum2.exe del renum2.exe
+if exist renum.exe del renum.exe
 
 call stdcomp bwbasic.c
 call stdcomp bwb_int.c
@@ -36,14 +36,14 @@ Rem If compiling under DOS 32 bit (gcc 5.1.0) add -m32 after -s
 gcc -s -m32 -ansi -DMSDOS -o bwbasic.exe bwb_cmd.o bwb_cnd.o bwb_dio.o bwb_exp.o bwb_fnc.o bwb_inp.o bwb_int.o bwb_prn.o bwb_stc.o bwb_str.o bwb_tbl.o bwb_var.o bwbasic.o bwd_cmd.o bwd_fun.o bwx_tty.o
 
 Rem If compiling under DOS 32 bit (gcc 5.1.0) add -m32 after -s
-gcc -s -m32 -ansi -DMSDOS -o renum2.exe renum2.c 
+gcc -s -m32 -ansi -DMSDOS -o renum.exe renum.c 
 
-if exist "renum2.exe" (
+if exist "renum.exe" (
   echo.
-  echo Compile suceeded for renum2.exe.
+  echo Compile suceeded for renum.exe.
 ) else (
   echo.
-  echo Compile FAILED for renum2.exe.
+  echo Compile FAILED for renum.exe.
 )
 
 if exist "bwbasic.exe" (
