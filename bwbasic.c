@@ -83,7 +83,7 @@ static char *Banner[] = {
   "                                    ##     ## ##     ## ##    ##  ##  ##    ##",
   "                                    ########  ##     ##  ######  ####  ###### ",
   "                                                                              ",
-  "Bywater BASIC Interpreter, version 3.20f                                      ",
+  "Bywater BASIC Interpreter, version 3.20g                                      ",
   "Copyright (c) 1993, Ted A. Campbell                                           ",
   "Copyright (c) 1995-1997  , Jon B. Volkoff                                     ",
   "Copyright (c) 2014-2017  , Howard Wulf, AF5NE                                 ",
