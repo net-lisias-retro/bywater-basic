@@ -348,6 +348,7 @@ var_free (VariableType * variable)
           variable->Value.String[j].length = 0;
         }
         free (variable->Value.String);
+        ;
         variable->Value.String = NULL;
       }
     }

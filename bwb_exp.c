@@ -2702,23 +2702,30 @@ buff_read_function (char *buffer, int *position, VariantType * X)
               {
                 /* STRING */
                 var_make (argn, StringTypeCode);
-                if ((argn->Value.String =
+                /* CM-20211223 this is double allocating, squashing the
+                   pointer from the calloc() within var_make(). The RAM! It
+                   be leakin'! */
+                /*if ((argn->Value.String =
                      (StringType *) calloc (1, sizeof (StringType))) == NULL)
                 {
                   WARN_OUT_OF_MEMORY;
                   return RESULT_ERROR;
-                }
+                }*/
                 PARAM_LENGTH = T.Length;
-                /* PARAM_BUFFER = T.Buffer; */
-                if ((PARAM_BUFFER =
-                     (char *) calloc (T.Length + 1 /* NulChar */ ,
+                /* CM-20211223 either we keep the buffer instead of making a
+                   new one or we need to free it. See RELEASE_VARIANT below.
+                   I'm unremm'ing PARAM_BUFFER and leaving RELEASE_VARIANT
+                   disabled. */
+                PARAM_BUFFER = T.Buffer;
+                /*if ((PARAM_BUFFER =
+                     (char *) calloc (T.Length + 1 /* NulChar *//* ,
                                       sizeof (char))) == NULL)
                 {
                   WARN_OUT_OF_MEMORY;
                   return RESULT_ERROR;
                 }
                 bwb_memcpy (PARAM_BUFFER, T.Buffer, T.Length);
-                PARAM_BUFFER[PARAM_LENGTH] = NulChar;
+                PARAM_BUFFER[PARAM_LENGTH] = NulChar;*/
                 /* add type  to ParameterTypes */
                 if (ParameterCount < MAX_FARGS)
                 {
@@ -2736,6 +2743,8 @@ buff_read_function (char *buffer, int *position, VariantType * X)
               {
                 ParameterCount++;
               }
+              /* CM-20211223 see comment dated the same just above. I chose to
+                 keep the buffer... wondering why these had been rem'd out... */
               /* RELEASE_VARIANT( &T ); */
             }
             while (buff_skip_seperator (buffer, &p));
