@@ -676,7 +676,7 @@ bwb_close( l )
 
       /* mark the device in the table as unavailable */
 
-      dev_table[ req_devnumber ].mode = DEVMODE_AVAILABLE;
+      dev_table[ req_devnumber ].mode = DEVMODE_CLOSED;
 
       /* Revised to FREE pass-thru call by JBV */
       if ( dev_table[ req_devnumber ].buffer != NULL )
@@ -1009,7 +1009,7 @@ bwb_kill( l )
    /* try to delete the specified file */
 
    str_btoc( atbuf, &( e->sval ) );
-   r = unlink( atbuf );
+   r = remove( atbuf );
 
    /* detect error */
 
