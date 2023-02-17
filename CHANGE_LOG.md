@@ -1,5 +1,8 @@
 # bywater basic (bw-basic) :: Change Log
 
+* 2009-0604: 2.50 (Paul Edwards)
+	+ Bug fixes
+	+ New compilation procedure for MVS and CMS
 * 2009-0126: 2.40 (Paul Edwards)
 	+ Bug fixes from Bill Chatfield
 	+ Updated documentation
