@@ -676,7 +676,7 @@ bwb_close( l )
 
       /* mark the device in the table as unavailable */
 
-      dev_table[ req_devnumber ].mode = DEVMODE_CLOSED;
+      dev_table[ req_devnumber ].mode = DEVMODE_AVAILABLE;
 
       /* Revised to FREE pass-thru call by JBV */
       if ( dev_table[ req_devnumber ].buffer != NULL )
