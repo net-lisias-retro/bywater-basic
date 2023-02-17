@@ -1,5 +1,15 @@
 # bywater basic (bw-basic) :: Change Log
 
+* 1996-0315: 2.20.1 (Jon B. Volkoff)
+	+ Patch Level 1.
+	+ `bwb_cnd.c`
+		- Moved init routine for bwb_while so that it would be initialized regardless of expression value, not just if TRUE.  This was causing some segmentation faults in WHILE-WEND loops.
+	+ `bwb_elx.c`
+		- Plugged gaping memory leak.  Temp variable space for expression evaluation was being allocated but not freed when done (oops!).
+	+ `bwb_fnc.c`
+		- Added check for NULL return from getenv to prevent segmentation faults.
+	+ `bwbasic.h`
+		- Revised VERSION define to reflect above changes.
 * 1995-1125: 2.20 (Jon B. Volkoff)
 	+ Plugged numerous memory leaks, resolved memory overruns and allocation difficulties.
 	+ General cleanup and bug fixes, too many to list in detail here. The major problem areas addressed were:
