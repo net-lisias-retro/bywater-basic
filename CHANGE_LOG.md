@@ -1,5 +1,19 @@
 # bywater basic (bw-basic) :: Change Log
 
+* 2016-0717: 3.10 (Howard Wulf)
+	+ Implements most of the following BASIC dialects:
+		- OPTION VERSION DARTMOUTH        ' Dartmouth DTSS BASIC
+		- OPTION VERSION MARK-I           ' GE 265 Mainframe BASIC
+		- OPTION VERSION MARK-II          ' GE 435 Mainframe BASIC
+		- OPTION VERSION SYSTEM-360       ' IBM System/360 BASIC
+		- OPTION VERSION SYSTEM-370       ' IBM System/370 BASIC
+		- OPTION VERSION CBASIC-II        ' CBASIC-II for CP/M
+		- OPTION VERSION ECMA-55          ' ANSI Minimal BASIC
+		- OPTION VERSION HANDBOOK1        ' The BASIC Handbook, 1st Edition
+		- OPTION VERSION HANDBOOK2        ' The BASIC Handbook, 2nd Edition
+		- OPTION VERSION TRS-80           ' TRS-80 Model I/III/4 LBASIC
+		- OPTION VERSION BASIC-80         ' Microsoft BASIC-80 for Xenix
+		- OPTION VERSION ECMA-116         ' ANSI Full BASIC
 * 2015-0512: 3.00 (Howard Wulf)
 	- Code redesign from Howard Wulf, AF5NE 
 * 2014-0804: 2.61 (Paul Edwards)
