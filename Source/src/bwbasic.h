@@ -36,6 +36,8 @@
 /*                                                               */
 /* Version 3.20 by Howard Wulf, AF5NE                            */
 /*                                                               */
+/* Version 3.20c by KenUnix                                      */
+/*                                                               */
 /*---------------------------------------------------------------*/
 
 
@@ -448,9 +450,20 @@
 ** Filename for PROFILE, only used when PROFILE == TRUE 
 ** This file contains the various OPTION commands
 **
+** If MSDOS C:\Bwbasic\profile.bas
+** Else if LINUX /usr/share/bwbasic/profile.bas
+** Else profile.bas
+**
 */
+#ifdef MSDOS
+#define PROFILENAME  "C:\\Bwbasic\\profile.bas"
+#elif LINUX
+#define PROFILENAME "/usr/share/bwbasic/profile.bas"
+#else
 #define   PROFILENAME        "profile.bas"
+#endif
 #endif /* PROFILENAME */
+
 
 #if       FALSE
 /*

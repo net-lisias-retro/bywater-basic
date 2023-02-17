@@ -1,0 +1,24 @@
+#!/bin/bash
+# 4-2020 Ken
+echo "Input file to clean leading spaces "
+read infile
+if [ -r $infile ]
+then
+	echo "Wait, copying original input file to $infile.cpy"
+	cp $infile $infile.cpy
+else
+	echo "Input file is unreadable"
+	exit 1
+fi
+# Sucessively delete leading spaces
+ed $infile <<!
+1,\$ s/^ //
+1,\$ s/^ //
+1,\$ s/^ //
+1,\$ s/^ //
+w $infile
+\$=
+q
+!
+exit 0
+

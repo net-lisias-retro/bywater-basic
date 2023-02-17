@@ -36,7 +36,7 @@
 /*                                                               */
 /* Version 3.20 by Howard Wulf, AF5NE                            */
 /*                                                               */
-/* Version 3.20b by Ken Martin                                   */
+/* Version 3.20c by Ken Martin                                   */
 /*                                                               */
 /*---------------------------------------------------------------*/
 
@@ -83,7 +83,7 @@ static char *Banner[] = {
   "                                    ##     ## ##     ## ##    ##  ##  ##    ##",
   "                                    ########  ##     ##  ######  ####  ###### ",
   "                                                                              ",
-  "Bywater BASIC Interpreter, version 3.20b                                      ",
+  "Bywater BASIC Interpreter, version 3.20c                                      ",
   "Copyright (c) 1993, Ted A. Campbell                                           ",
   "Copyright (c) 1995-1997  , Jon B. Volkoff                                     ",
   "Copyright (c) 2014-2017  , Howard Wulf, AF5NE                                 ",
@@ -700,6 +700,8 @@ execute_profile (char *FileName)
   assert (FileName != NULL);
 
   My->NextValidLineNumber = MINLIN;
+
+/* printf ("to open [%s]\r\n",FileName); Ken */
   profile = fopen (FileName, "r");
   if (profile == NULL)
   {

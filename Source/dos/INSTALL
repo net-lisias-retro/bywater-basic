@@ -1,0 +1,87 @@
+Some Notes on Installation of the Bywater BASIC Interpreter:
+-----------------------------------------------------------
+
+0. Quick-Start Guide For Compiling
+
+   To use the default configuration (which is reasonable for most situations):
+
+   On Unix using GCC:
+       gcc -o bwbasic -lm -ansi -pedantic -Wall -Werror bw*.c
+   
+   On Android CCTools using GCC:
+       gcc -o bwbasic -lm -ansi -pedantic -Wall -Werror bw*.c
+      
+   On MSDOS using Borland C++ 3.1:
+      bcc.exe -mh -eBWBASIC.EXE -D_DOS=1 -Y bw*.c
+   
+   On MSDOS using Digital Mars Compiler Version 8.42n:
+      dmc.exe -mx -A89 -oBWBASIC.EXE -DHAVE_DOS=1 bwbasic.c bwb_cmd.c bwb_cnd.c 
+      bwb_dio.c bwb_exp.c bwb_fnc.c bwb_inp.c bwb_int.c bwb_prn.c bwb_stc.c 
+      bwb_str.c bwb_tbl.c bwb_var.c bwd_cmd.c bwd_fun.c bwx_tty.c X32.LIB
+
+   On MSDOS using Open Watcom 1.9:
+      wcl386 -bc -c -ox -q -wx -za -D_DOS -D__WATCOM__ bw*.c
+      wlink option quiet file bw*.obj name bwbasic.exe
+
+   The following MSDOS compilers are unable to compile Bywater BASIC:
+      Borland Turbo C 2.01
+      Hi-Tech Pacific C 7.51
+      Mix Power C 2.2.0
+
+   You can skip the rest of this file unless you want to customize the
+   BASIC dialect that is supported, or something goes wrong in the
+   above commands.
+
+
+1. Compiler Requirements
+
+   ANSI C.
+
+
+2. Configuration of header files
+
+   You may need to examine file "bwbasic.h" to make important
+   changes for specific hardware and compiler configurations.
+
+
+3. Makefiles
+
+   Several compiler-specific makefiles are provided AS-IS,
+   and have not been tested with Bywater BASIC version 3.XX.
+   
+   "makefile" should compile the program on Unix-based computers. 
+      
+   "makefile.qcl" should compile using Microsoft QuickC (tm).
+
+   
+4. Implementations
+
+   TTY is the base implementation and presumes a simple
+   TTY-style environment, with all keyboard and screen input
+   and output directed through stdin and stdout.  All commands,
+   functions and operators should be available in the TTY 
+   implementation, even when they do nothing.  For example, 
+   CLS, COLOR and LOCATE do nothing when OPTION TERMINAL NONE 
+   is specified.  This allows exising classic BASIC applications 
+   to execute, even though the display will not be accurate.
+   
+   
+5. Adding Commands and Functions
+
+   Follow the rules in "Implementation rules for functions and commands";
+   the majority of BASIC commands are actually intrinsic functions.
+   Adding a new command is more work than adding a new function.   
+
+   In order to add a new command to bwBASIC:
+
+      Search for C_WRITE and bwb_WRITE,
+      and add your command's eqivalent information in the same places.
+      Each command (#define C_...) shoud have a unique number.
+
+   Adding a new function is easier:
+   
+      Search for F_ABS_X_N, 
+      and add your function's equivalent information in the same places.
+      Each function (#define F_...) shoud have a unique number.
+      
+
