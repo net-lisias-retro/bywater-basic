@@ -1,5 +1,32 @@
 # bywater basic (bw-basic) :: Change Log
 
+* 1997-1011: 2.20.2 (Jon B. Volkoff)
+	+ Patch Level 2.
+	+ `bwb_cmd.c`
+   		- Fixed calling stack level logic in RETURN statement to prevent erroneous "RETURN without GOSUB" messages.
+	+ `bwb_cnd.c`, `bwb_stc.c`
+		- Changed continuation condition for WHILE, ELSEIF, and LOOP UNTIL to be != FALSE, not == TRUE. More in line with common commercial BASIC implementations.
+	+ `bwb_mth.c`
+		- Fixed initialization in VAL function so that old results are not later returned as values.
+	+ `bwb_var.c`
+		- Added parenthesis level checking to dim_getparams. Using multi-level expressions as array subscripts was causing the program to bomb.
+	+ `bwx_iqc.c`, `bwx_tty.c`, `bwb_mes.h`
+		- Added second copyright notice.
+	+ `bwb_dio.c`, `bwb_str.c`
+		- Added support for strings longer than 255 characters.
+	+ `bwb_prn.c`
+		- Disabled tab expansion and print width checks when not printing to a file.
+	+ `bwb_inp.c`
+		- Fixed LINE INPUT file reads to accommodate strings of length MAXSTRINGSIZE.
+	+ `bwx_ncu.h`, `bwx_ncu.c`
+		- New files.  Code for UNIX ncurses interface, compliments of L.C. Benschop, Eindhoven, The Netherlands.
+	+ `Makefile.ncu`
+		New files.  Sample makefile for ncurses implementation.
+	+ `bwbasic.h`
+		- Revised defines for MININTSIZE and MAXINTSIZE from 16-bit to 32-bit limits.
+		- Revised define for MAXSTRINGSIZE from 255 to 5000 characters.
+   		- Changed string length from unsigned char to unsigned int to support strings longer than 255 characters.
+		- Added support for new ncurses package.
 * 1996-0315: 2.20.1 (Jon B. Volkoff)
 	+ Patch Level 1.
 	+ `bwb_cnd.c`
