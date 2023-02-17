@@ -1,5 +1,7 @@
 # bywater basic (bw-basic) :: Change Log
 
+* 2014-0804: 2.61 (Paul Edwards)
+	- Bug fix from Matthias Rustler
 * 2012-1106: 2.60 (Paul Edwards)
 	- New maths functions and append mode support from Edmond Orignac
 	- Bug fixes
