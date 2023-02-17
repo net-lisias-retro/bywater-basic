@@ -1,5 +1,8 @@
 # bywater basic (bw-basic) :: Change Log
 
+* 2012-1106: 2.60 (Paul Edwards)
+	- New maths functions and append mode support from Edmond Orignac
+	- Bug fixes
 * 2009-0604: 2.50 (Paul Edwards)
 	+ Bug fixes
 	+ New compilation procedure for MVS and CMS
