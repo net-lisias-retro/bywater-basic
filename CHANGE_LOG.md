@@ -1,5 +1,7 @@
 # bywater basic (bw-basic) :: Change Log
 
+* 2015-0512: 3.00 (Howard Wulf)
+	- Code redesign from Howard Wulf, AF5NE 
 * 2014-0804: 2.61 (Paul Edwards)
 	- Bug fix from Matthias Rustler
 * 2012-1106: 2.60 (Paul Edwards)
