@@ -1,5 +1,7 @@
 # bywater basic (bw-basic) :: Change Log
 
+* 2020-0430: 3.20.2 (Ken Martin)
+	+ No change log provided 
 * 2020-0416: 3.20.1 (Ken Martin)
 	+ No change log provided 
 * 2017-0604: 3.20 (Howard Wulf)

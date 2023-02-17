@@ -5,10 +5,10 @@ does have do this once
 
 sudo ln /usr/bin/clear /usr/bin/cls
 
-Then in your bwbasic 3.2 program to clear the screen use
-shell "cls"
+Then in your bwbasic 3.20b program to clear the screen use
+SHELL "cls"
 
-Or at the start of you bwbasic 3.2 program include
-option terminal ANSI
-then cls will work
+Or at the start of you bwbasic 3.20b program include
+OPTION TERMINAL ANSI
+then CLS will work
 

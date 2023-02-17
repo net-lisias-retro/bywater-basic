@@ -36,7 +36,8 @@
 /*                                                               */
 /* Version 3.20 by Howard Wulf, AF5NE                            */
 /*                                                               */
-/* Version 3.20A by Ken Martin   Mainly corrected fprint issues  */
+/* Version 3.20b by Ken Martin   Mainly corrected fprint and     */
+/*                             fread and fgets to work in Ubuntu */
 /*                                                               */
 /*---------------------------------------------------------------*/
 
@@ -90,6 +91,7 @@ bwx_run (LineType * Line, char *ProgramName)
 {
   size_t n;
   char *tbuf;
+  int retn;
    
   assert (Line != NULL);
   assert( My != NULL );
@@ -113,7 +115,7 @@ bwx_run (LineType * Line, char *ProgramName)
   bwb_strcpy (tbuf, ProgramName);
   bwb_strcat (tbuf, " ");
   bwb_strcat (tbuf, My->ProgramFilename);
-  system (tbuf);
+  retn=system (tbuf);
   free (tbuf);
   tbuf = NULL;
 
@@ -2501,7 +2503,7 @@ bwb_RENAME (LineType * l)
 extern void
 Determinant (VariableType * v)
 {
-  /* http://easy-learn-c-language.blogspot.com/search/label/Numerical%20Methods */
+  /* http://easy-learn-c-language.blogspot.com/search/label/Numerical Methods */
   /* Numerical Methods: Determinant of nxn matrix using C */
 
   DoubleType **matrix;
@@ -2628,7 +2630,7 @@ EXIT:
 int
 InvertMatrix (VariableType * vOut, VariableType * vIn)
 {
-  /* http://easy-learn-c-language.blogspot.com/search/label/Numerical%20Methods */
+  /* http://easy-learn-c-language.blogspot.com/search/label/Numerical Methods */
   /* Numerical Methods: Inverse of nxn matrix using C */
 
   int Result;
@@ -4200,6 +4202,7 @@ bwb_CLOAD8 (LineType * l)
   unsigned long n;
   size_t t;
   char varname[NameLengthMax + 1];
+  int myfget;
    
   assert (l != NULL);
 
@@ -4249,7 +4252,7 @@ bwb_CLOAD8 (LineType * l)
   }
   /* read version number */
   n = 0;
-  fread (&n, sizeof (long), 1, f);
+  myfget=fread (&n, sizeof (long), 1, f);
   if (n != CSAVE_VERSION_1)
   {
     bwb_fclose (f);
@@ -4258,7 +4261,7 @@ bwb_CLOAD8 (LineType * l)
   }
   /* read total number of elements */
   n = 0;
-  fread (&n, sizeof (long), 1, f);
+  myfget=fread (&n, sizeof (long), 1, f);
   if (n != t)
   {
     bwb_fclose (f);
@@ -4266,7 +4269,7 @@ bwb_CLOAD8 (LineType * l)
     return (l);
   }
   /* read data */
-  fread (v->Value.Number, sizeof (DoubleType), t, f);
+  myfget=fread (v->Value.Number, sizeof (DoubleType), t, f);
   /* OK */
   bwb_fclose (f);
   return (l);
@@ -6247,7 +6250,8 @@ LineType *
 bwb_CMDS (LineType * l)
 {
   int n;
-  int t;
+  int lmtch;
+  int lcnt;
    
   assert (l != NULL);
   assert( My != NULL );
@@ -6255,29 +6259,21 @@ bwb_CMDS (LineType * l)
   assert( My->SYSOUT->cfp != NULL );
 
   My->CurrentFile = My->SYSOUT;
-  fprintf (My->SYSOUT->cfp, "BWBASIC COMMANDS AVAILABLE:\n");
+  fprintf (My->SYSOUT->cfp, "\nBWBASIC COMMANDS AVAILABLE:\n\n");
 
-  /* run through the command table and print comand names */
+  /* run through the command table and print command names */
 
-  t = 0;
-  for (n = 0; n < NUM_COMMANDS; n++)
+  lcnt = 0;
+
+  for (n = 0; n < NUM_COMMANDS; n++) /* Loop through table Ken 4-2020 */
   {
-    fprintf (My->SYSOUT->cfp, "%s", IntrinsicCommandTable[n].name);
-    if (t < 4)
-    {
-      fprintf (My->SYSOUT->cfp, "\t");
-      t++;
-    }
-    else
-    {
-      fprintf (My->SYSOUT->cfp, "\n");
-      t = 0;
-    }
+  lmtch = strcmp(IntrinsicCommandTable[n].name,IntrinsicCommandTable[n+1].name);
+  if (lmtch != 0) { /* If duplicate don't print */
+   fprintf (My->SYSOUT->cfp, "%s\n", IntrinsicCommandTable[n].name);
+   lcnt = lcnt + 1;
   }
-  if (t > 0)
-  {
-    fprintf (My->SYSOUT->cfp, "\n");
   }
+  fprintf (My->SYSOUT->cfp, "\nTotal Commands %d\n\n",lcnt);
   ResetConsoleColumn ();
   return (l);
 }
