@@ -1,0 +1,11 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Encoding=UTF-8
+Name=Bywater BASIC
+GenericName=Bywater BASIC
+Type=Application
+Exec=<File Location>bwbasic.sh
+Icon=<File Location>bwbasic.png
+StartupNotify=true
+Terminal=true
+Categories=Development

@@ -1,0 +1,40 @@
+#!/bin/bash
+echo " "
+echo "4-22-2020 Ken. Works under Ubuntu Linux 18.04, 19.10"
+echo "Ubuntu Mate 20.04, Debian 10, Ubuntu and Debian under"
+echo "Windows WSL, Debian 9.x and 10.x on a Beaglebone Black."
+echo " "
+if [ `id -u` -eq "0" ]
+     then echo "This should not be executed as root";echo " ";exit 1
+fi
+echo "Press ENTER to compile otherwise press Ctrl/c to cancel"; read j
+# Clean out any previous
+rm -f bwbasic renum *.o
+echo " "
+echo "Compile in progress... Please wait."
+# Optimize for size -Os and ansi -ansi
+gcc -Os -ansi -o bwbasic bw*.c -lm
+if [ "$?" -gt "0" ]
+	then echo "Compile of bwbasic failed";echo " ";exit 1
+fi
+# Optimize for size -Os and ansi -ansi
+gcc -Os -ansi -o renum renum.c -lm
+if [ "$?" -gt "0" ]
+	then echo "Compile of renum failed";echo " ";exit 1
+fi
+# Show resulting sizes
+ls -l bwbasic renum
+echo " "
+echo "Results look OK?? If yes press ENTER otherwise press Ctrl/c now";read j
+echo " ";echo "Copying in progress. You may need to supply your password."
+sudo cp bwbasic /usr/local/bin/bwbasic
+sudo cp renum /usr/local/bin/renum
+sudo chmod 755 /usr/local/bin/bwbasic
+sudo chmod 755 /usr/local/bin/renum
+echo " ";echo "Copying completed"
+echo " "
+echo "You should now be able to run bwbasic from the command line."
+echo "And use  renum  (renumbering tool) from the command line."
+echo " "
+echo "-- Done --"
+
