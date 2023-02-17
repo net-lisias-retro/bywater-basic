@@ -64,10 +64,10 @@ bwx_LOCATE (int Row, int Col)
   case C_OPTION_TERMINAL_NONE:
     break;
   case C_OPTION_TERMINAL_ADM:
-    fprintf (My->SYSOUT->cfp, "%c=%c%c", 27, Row + 32, Col + 32);
+    fprintf (My->SYSOUT->cfp, "\e=%c%c", Row + 32, Col + 32);
     break;
   case C_OPTION_TERMINAL_ANSI:
-    fprintf (My->SYSOUT->cfp, "%c[%d;%dH", 27, Row, Col);
+    fprintf (My->SYSOUT->cfp, "\e[%d;%dH", Row, Col);
     break;
   default:
     WARN_ADVANCED_FEATURE;
@@ -90,10 +90,10 @@ bwx_CLS (void)
   case C_OPTION_TERMINAL_NONE:
     break;
   case C_OPTION_TERMINAL_ADM:
-    fprintf (My->SYSOUT->cfp, "%c", 26);
+    fputc(26, My->SYSOUT->cfp);
     break;
   case C_OPTION_TERMINAL_ANSI:
-    fprintf (My->SYSOUT->cfp, "%c[2J", 27);
+    fputs("\e[2J", My->SYSOUT->cfp);
     break;
   default:
     WARN_ADVANCED_FEATURE;
@@ -111,7 +111,7 @@ bwx_COLOR (int Fore, int Back)
   assert (My != NULL);
   assert (My->SYSOUT != NULL);
   assert (My->SYSOUT->cfp != NULL);
-  if (Fore < 0 || Back < 0)
+  if (Fore < 0 || Fore > 15 || Back < 0 || Back > 15)
   {
     WARN_ILLEGAL_FUNCTION_CALL;
     return;
@@ -123,7 +123,10 @@ bwx_COLOR (int Fore, int Back)
   case C_OPTION_TERMINAL_ADM:
     break;
   case C_OPTION_TERMINAL_ANSI:
-    fprintf (My->SYSOUT->cfp, "%c[%d;%dm", 27, 30 + Fore, 40 + Back);
+    fprintf (My->SYSOUT->cfp, "\e[%d;%dm", 
+      Fore+(Fore>7 ? 82 : 30),
+      Back+(Back>7 ? 92 : 40)
+    );
     break;
   default:
     WARN_ADVANCED_FEATURE;

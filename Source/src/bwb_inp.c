@@ -162,6 +162,16 @@ CleanTextInput (char *buffer)
   }
 }
 
+void bwb_close_all() {
+    FileType *F;
+
+    for (F = My->FileHead; F != NULL; F = F->next)
+    {
+      field_close_file (F);
+      file_clear (F);
+    }
+}
+
 
 
 /***************************************************************
@@ -890,13 +900,7 @@ bwb_CLOSE (LineType * Line)
   if (line_is_eol (Line))
   {
     /* CLOSE */
-    FileType *F;
-
-    for (F = My->FileHead; F != NULL; F = F->next)
-    {
-      field_close_file (F);
-      file_clear (F);
-    }
+    bwb_close_all();
     return (Line);
   }
 
@@ -1293,6 +1297,19 @@ D71_GET (LineType * Line)
   return (Line);
 }
 
+/* 20210916-ChipMaster: BINARY read/write macros - to tailor for each
+   platform, ASSuming it will need to be. Returns TRUE on success. */
+#if TRUE /* Linux */
+#define BWRITE(F,V)  (write(fileno(F), &V, sizeof(V))==sizeof(V))
+#define BREAD(F,V)    (read(fileno(F), &V, sizeof(V))==sizeof(V))
+#define BWRITES(F,V) (write(fileno(F), V->Buffer, V->Length)==V->Length)
+#define BREADS(F,V)   (read(fileno(F), V->Buffer, V->Length)==V->Length)
+#else    /* What it was */
+#define BWRITE(F,V)  (fwrite(&V, sizeof(V), 1, F)==F)
+#define BREAD(F,V)    (fread(&V, sizeof(V), 1, F)==F)
+#define BWRITES(F,V) (fwrite(V->Buffer, V->Length, 1, F)==1)
+#define BREADS(F,V)   (fread(V->Buffer, V->Length, 1, F)==1)
+#endif
 extern int
 binary_get_put (VariableType * Variable, int IsPUT)
 {
@@ -1311,6 +1328,10 @@ binary_get_put (VariableType * Variable, int IsPUT)
     WARN_VARIABLE_NOT_DECLARED;
     return FALSE;
   }
+#ifdef CMDEBUG
+  errno = 0;
+  fputs("errno=0\n", stderr);
+#endif
   switch (Variant->VariantTypeCode)
   {
   case ByteTypeCode:
@@ -1319,7 +1340,7 @@ binary_get_put (VariableType * Variable, int IsPUT)
       Value = (ByteType) Variant->Number;
       if (IsPUT)
       {
-        if (fwrite (&(Value), sizeof (Value), 1, My->CurrentFile->cfp) != 1)
+        if(!BWRITE(My->CurrentFile->cfp, Value))
         {
           WARN_DISK_IO_ERROR;
           return FALSE;
@@ -1327,7 +1348,7 @@ binary_get_put (VariableType * Variable, int IsPUT)
       }
       else
       {
-        if (fread (&(Value), sizeof (Value), 1, My->CurrentFile->cfp) != 1)
+        if(!BREAD(My->CurrentFile->cfp, Value))
         {
           WARN_DISK_IO_ERROR;
           return FALSE;
@@ -1342,7 +1363,7 @@ binary_get_put (VariableType * Variable, int IsPUT)
       Value = (IntegerType) Variant->Number;
       if (IsPUT)
       {
-        if (fwrite (&(Value), sizeof (Value), 1, My->CurrentFile->cfp) != 1)
+        if(!BWRITE(My->CurrentFile->cfp, Value))
         {
           WARN_DISK_IO_ERROR;
           return FALSE;
@@ -1350,7 +1371,7 @@ binary_get_put (VariableType * Variable, int IsPUT)
       }
       else
       {
-        if (fread (&(Value), sizeof (Value), 1, My->CurrentFile->cfp) != 1)
+        if(!BREAD(My->CurrentFile->cfp, Value))
         {
           WARN_DISK_IO_ERROR;
           return FALSE;
@@ -1365,7 +1386,7 @@ binary_get_put (VariableType * Variable, int IsPUT)
       Value = (LongType) Variant->Number;
       if (IsPUT)
       {
-        if (fwrite (&(Value), sizeof (Value), 1, My->CurrentFile->cfp) != 1)
+        if(!BWRITE(My->CurrentFile->cfp, Value))
         {
           WARN_DISK_IO_ERROR;
           return FALSE;
@@ -1373,7 +1394,7 @@ binary_get_put (VariableType * Variable, int IsPUT)
       }
       else
       {
-        if (fread (&(Value), sizeof (Value), 1, My->CurrentFile->cfp) != 1)
+        if(!BREAD(My->CurrentFile->cfp, Value))
         {
           WARN_DISK_IO_ERROR;
           return FALSE;
@@ -1388,7 +1409,7 @@ binary_get_put (VariableType * Variable, int IsPUT)
       Value = (CurrencyType) Variant->Number;
       if (IsPUT)
       {
-        if (fwrite (&(Value), sizeof (Value), 1, My->CurrentFile->cfp) != 1)
+        if(!BWRITE(My->CurrentFile->cfp, Value))
         {
           WARN_DISK_IO_ERROR;
           return FALSE;
@@ -1396,7 +1417,7 @@ binary_get_put (VariableType * Variable, int IsPUT)
       }
       else
       {
-        if (fread (&(Value), sizeof (Value), 1, My->CurrentFile->cfp) != 1)
+        if(!BREAD(My->CurrentFile->cfp, Value))
         {
           WARN_DISK_IO_ERROR;
           return FALSE;
@@ -1411,7 +1432,7 @@ binary_get_put (VariableType * Variable, int IsPUT)
       Value = (SingleType) Variant->Number;
       if (IsPUT)
       {
-        if (fwrite (&(Value), sizeof (Value), 1, My->CurrentFile->cfp) != 1)
+        if(!BWRITE(My->CurrentFile->cfp, Value))
         {
           WARN_DISK_IO_ERROR;
           return FALSE;
@@ -1419,7 +1440,7 @@ binary_get_put (VariableType * Variable, int IsPUT)
       }
       else
       {
-        if (fread (&(Value), sizeof (Value), 1, My->CurrentFile->cfp) != 1)
+        if(!BREAD(My->CurrentFile->cfp, Value))
         {
           WARN_DISK_IO_ERROR;
           return FALSE;
@@ -1434,7 +1455,7 @@ binary_get_put (VariableType * Variable, int IsPUT)
       Value = (DoubleType) Variant->Number;
       if (IsPUT)
       {
-        if (fwrite (&(Value), sizeof (Value), 1, My->CurrentFile->cfp) != 1)
+        if(!BWRITE(My->CurrentFile->cfp, Value))
         {
           WARN_DISK_IO_ERROR;
           return FALSE;
@@ -1442,7 +1463,7 @@ binary_get_put (VariableType * Variable, int IsPUT)
       }
       else
       {
-        if (fread (&(Value), sizeof (Value), 1, My->CurrentFile->cfp) != 1)
+        if(!BREAD(My->CurrentFile->cfp, Value))
         {
           WARN_DISK_IO_ERROR;
           return FALSE;
@@ -1455,16 +1476,13 @@ binary_get_put (VariableType * Variable, int IsPUT)
     if (IsPUT)
     {
 #if FALSE /* keep this ... */
-      if (fwrite
-          (&(Variant->Length), sizeof (Variant->Length), 1,
-           My->CurrentFile->cfp) != 1)
+      if(!BWRITE(My->CurrentFile->cfp, Variant->Length))
       {
         WARN_DISK_IO_ERROR;
         return FALSE;
       }
 #endif
-      if (fwrite (Variant->Buffer, Variant->Length, 1, My->CurrentFile->cfp)
-          != 1)
+      if(!BWRITES(My->CurrentFile->cfp, Variant))
       {
         WARN_DISK_IO_ERROR;
         return FALSE;
@@ -1473,16 +1491,13 @@ binary_get_put (VariableType * Variable, int IsPUT)
     else
     {
 #if FALSE /* keep this ... */
-      if (fread
-          (&(Variant->Length), sizeof (Variant->Length), 1,
-           My->CurrentFile->cfp) != 1)
+      if(!BREAD(My->CurrentFile->cfp, Variant->Length))
       {
         WARN_DISK_IO_ERROR;
         return FALSE;
       }
 #endif
-      if (fread (Variant->Buffer, Variant->Length, 1, My->CurrentFile->cfp) !=
-          1)
+      if(!BREADS(My->CurrentFile->cfp, Variant))
       {
         WARN_DISK_IO_ERROR;
         return FALSE;
@@ -2765,7 +2780,25 @@ bwb_LINE_INPUT (LineType * Line)
     if (fgets (tbuf, tlen, My->CurrentFile->cfp))        /* bwb_LINE_INPUT */
     {
       tbuf[tlen] = NulChar;
-      CleanTextInput (tbuf);
+      /* jaf-20211006 CleanTextInput() converts all <' ' chars to ' '. None of
+         the dialects I've used did this with `LINE INPUT ...` You could read a
+         whole file, verbatim, control codes and all (other than EOL), assuming
+         it had line breaks frequently enough. I was just going to patch
+         CleanTextInput, but it appears it may have valid uses in other
+         contexts. So lets replace the call to it with a simple EOL filter.
+         Depending on OS and compiler and since we're not opening files in
+         "text" mode we'll strip off up to two CRs or LFs. This means that CRLF
+         endings will be handled the same as LF, even on UNIX. I don't think
+         this will cause problems... I think its an advantage.
+      //CleanTextInput (tbuf); */
+      tlen=strlen(tbuf);
+      if(tlen--) {
+        if(tbuf[tlen]=='\r' || tbuf[tlen]=='\n') {
+          tlen--;
+          if(tlen>=0 && (tbuf[tlen]=='\r' || tbuf[tlen]=='\n')) tlen--;
+          tbuf[tlen+1] = NulChar;
+        }
+      }
     }
     else
     {

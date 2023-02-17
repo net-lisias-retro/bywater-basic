@@ -1,26 +1,26 @@
 /***************************************************************
-  
+
         bwb_prn.c       Print and Error-Handling Commands
                         for Bywater BASIC Interpreter
-  
+
                         Copyright (c) 1993, Ted A. Campbell
                         Bywater Software
-  
+
                         email: tcamp@delphi.com
-  
+
         Copyright and Permissions Information:
-  
+
         All U.S. and international rights are claimed by the author,
         Ted A. Campbell.
-  
+
    This software is released under the terms of the GNU General
    Public License (GPL), which is distributed with this software
    in the file "COPYING".  The GPL specifies the terms under
    which users may copy and use the software in this distribution.
-  
+
    A separate license is available for commercial distribution,
    for information on which you should contact the author.
-  
+
 ***************************************************************/
 
 /*---------------------------------------------------------------*/
@@ -75,9 +75,9 @@ For example:
 1) some use '%' for strings, others use '%' for numbers, others consider '%' as a lieral.
 2) some count a leading or traling signs in the width, while others do not.
 3) when a value requires more digits than the assigned width:
-   a) some truncate the displayed value to the width, 
-   b) some expand the width, 
-   c) some print a number of '%' or '*', and 
+   a) some truncate the displayed value to the width,
+   b) some expand the width,
+   c) some print a number of '%' or '*', and
    d) some halt processing.
 There is no perfect solution that will work for all possible dialects.
 */
@@ -110,7 +110,7 @@ There is no perfect solution that will work for all possible dialects.
 int
 is_empty_string (char *Buffer)
 {
-   
+
 
   if (Buffer == NULL)
   {
@@ -132,7 +132,7 @@ FileType *
 find_file_by_name (char *FileName)
 {
   FileType *F;
-   
+
   if (is_empty_string (FileName))
   {
     /* the rules for Console and Printer vary by command */
@@ -164,7 +164,7 @@ FileType *
 find_file_by_number (int FileNumber)
 {
   FileType *F;
-   
+
 
   /* handle MAGIC file numbers */
   if (FileNumber <= 0)
@@ -196,7 +196,7 @@ file_new (void)
 {
   /* search for an empty slot.  If not found, add a new slot. */
   FileType *F;
-   
+
   assert( My != NULL );
   for (F = My->FileHead; F != NULL; F = F->next)
   {
@@ -224,7 +224,7 @@ void
 file_clear (FileType * F)
 {
   /* clean up a file slot that is no longer needed */
-   
+
   assert (F != NULL);
 
   clear_virtual_by_file (F->FileNumber);
@@ -258,7 +258,7 @@ file_next_number (void)
 {
   int FileNumber;
   FileType *F;
-   
+
 
   FileNumber = 0;
   assert( My != NULL );
@@ -281,12 +281,12 @@ file_next_number (void)
 
 
 /***************************************************************
-  
+
       FUNCTION:       bwx_putc()
-  
+
    DESCRIPTION:    This function outputs a single character
          to the default output device.
-  
+
 ***************************************************************/
 
 static void
@@ -295,7 +295,7 @@ CleanNumericString (char *prnbuf, int RemoveDot)
   /* remove trailing zeroes */
   char *E;
   char *D;
-   
+
   assert (prnbuf != NULL);
 
   E = bwb_strchr (prnbuf, 'E');
@@ -413,7 +413,7 @@ CountDigits (char *Buffer)
 {
   int NumDigits;
   char *P;
-   
+
   assert (Buffer != NULL);
 
 
@@ -440,20 +440,20 @@ extern void
 FormatBasicNumber (DoubleType Input, char *Output /* [ NUMLEN ] */ )
 {
    /*******************************************************************************
-   
-   This is essentially sprintf( Output, "%g", Input ), 
+
+   This is essentially sprintf( Output, "%g", Input ),
    except the rules for selecting between "%e", "%f", and "%d" are different.
 
    The C rules depend upon the value of the exponent.
    The BASIC rules depend upon the number of significant digits.
 
    The results of this routine have been verified by the NBS2 test suite, so...
-      
-   THINK VERY CAREFULLY BEFORE MAKING ANY CHANGES TO THIS ROUTINE.   
-   
+
+   THINK VERY CAREFULLY BEFORE MAKING ANY CHANGES TO THIS ROUTINE.
+
    *******************************************************************************/
   char *E;
-   
+
   assert (Output != NULL);
 
   assert( My != NULL );
@@ -533,7 +533,7 @@ LineType *
 bwb_LPRINT (LineType * l)
 {
   int IsCSV;
-   
+
   assert (l != NULL);
 
   assert( My != NULL );
@@ -546,14 +546,14 @@ bwb_LPRINT (LineType * l)
 
 
 /***************************************************************
-  
+
         FUNCTION:       bwb_print()
-  
+
         DESCRIPTION:    This function implements the BASIC PRINT
                         command.
-  
+
    SYNTAX:     PRINT [# device-number,][USING format-string$;] expressions...
-  
+
 ***************************************************************/
 
 
@@ -563,7 +563,7 @@ bwb_print_at (LineType * l)
   int position;
   int r;
   int c;
-   
+
   assert (l != NULL);
 
 
@@ -631,7 +631,7 @@ parse_file_number (LineType * l)
 {
   /* ... # FileNumber , ... */
   int FileNumber;
-   
+
   assert (l != NULL);
 
 
@@ -645,7 +645,7 @@ parse_file_number (LineType * l)
   assert( My->CurrentVersion != NULL );
   if (My->CurrentVersion->OptionVersionValue & (C77))
   {
-    /* 
+    /*
        CBASIC-II: SERIAL & RANDOM file writes
        PRINT # file_number                 ; expression [, expression] ' SERIAL write
        PRINT # file_number , record_number ; expression [, expression] ' RANDOM write
@@ -667,7 +667,7 @@ parse_file_number (LineType * l)
 
     if (line_skip_CommaChar (l) /* comma specific */ )
     {
-      /* 
+      /*
          PRINT # file_number , record_number ; expression [, expression] ' RANDOM write
        */
       /* get the RecordNumber */
@@ -719,9 +719,9 @@ parse_file_number (LineType * l)
     }
     return TRUE;
   }
-  /* 
+  /*
      SERIAL file writes:
-     PRINT # file_number   
+     PRINT # file_number
      PRINT # file_number [, expression]
    */
   if (FileNumber < 0)
@@ -767,7 +767,7 @@ LineType *
 bwb_PRINT (LineType * l)
 {
   int IsCSV;
-   
+
   assert (l != NULL);
 
   IsCSV = FALSE;
@@ -785,13 +785,13 @@ bwb_PRINT (LineType * l)
 }
 
 /***************************************************************
-  
+
         FUNCTION:       internal_print()
-  
+
    DESCRIPTION:    This function implements the PRINT
          command, utilizing a specified file our
          output device.
-  
+
 ***************************************************************/
 
 static int
@@ -799,7 +799,7 @@ buff_read_using (char *buffer, int *position, char *format_string,
                  int format_length)
 {
   int p;
-   
+
   assert (buffer != NULL);
   assert (position != NULL);
   assert (format_string != NULL);
@@ -950,7 +950,7 @@ internal_print (LineType * l, int IsCSV)
   char *format_string;
   int format_length;
   int format_position;
-   
+
   assert (l != NULL);
 
 
@@ -974,7 +974,7 @@ internal_print (LineType * l, int IsCSV)
     if (My->CurrentVersion->OptionVersionValue & (C77)
         && My->CurrentFile->FileNumber > 0)
     {
-      /* 
+      /*
        **
        ** CBASIC-II files are CSV files.
        **
@@ -999,7 +999,7 @@ internal_print (LineType * l, int IsCSV)
     }
     OutputCR = TRUE;
   }
-  else if (My->CurrentVersion->OptionVersionValue & (B15|T80|HB1|HB2) 
+  else if (My->CurrentVersion->OptionVersionValue & (B15|T80|HB1|HB2)
   &&  line_skip_word (l, "AT"))
   {
     /* PRINT AT position, ... */
@@ -1064,9 +1064,9 @@ internal_print (LineType * l, int IsCSV)
       /* resolve the string */
       if (My->IsErrorPending /* Keep This */ )
       {
-        /* 
+        /*
          **
-         ** this might look odd... 
+         ** this might look odd...
          ** but we want to abort printing on the first warning.
          ** The expression list could include a function with side-effects,
          ** so any error should immediately halt further evaluation.
@@ -1100,13 +1100,13 @@ internal_print (LineType * l, int IsCSV)
 
 
 /***************************************************************
-  
+
         FUNCTION:       print_using_variant()
-  
+
    DESCRIPTION:    This function gets the PRINT USING
          format string, returning a structure
          to the format.
-  
+
 ***************************************************************/
 static void
 print_using_number (char *buffer, int *position, VariantType * e)
@@ -1127,7 +1127,7 @@ print_using_number (char *buffer, int *position, VariantType * e)
   char TailChar;
   int p;
   char *tbuf;
-   
+
   assert (buffer != NULL);
   assert (position != NULL);
   assert (e != NULL);
@@ -1436,9 +1436,9 @@ print_using_number (char *buffer, int *position, VariantType * e)
     {
       if (i < commas && tbuf[i] == FillChar)
       {
-        /* 
+        /*
            Ignore the same number of leading spaces as there are commas.
-           While not perfect for all possible cases, 
+           While not perfect for all possible cases,
            it is usually good enough for practical purposes.
          */
       }
@@ -1471,7 +1471,7 @@ print_using_string (char *buffer, int *position, VariantType * e)
    */
   int p;
   char *tbuf;
-   
+
   assert (buffer != NULL);
   assert (position != NULL);
   assert (e != NULL);
@@ -1563,12 +1563,12 @@ print_using_string (char *buffer, int *position, VariantType * e)
 static int
 is_magic_string (char *buffer)
 {
-  /* 
+  /*
      for the character string pointed to 'buffer':
      return TRUE if it is a MagicString sequence,
      return FALSE otherwise.
    */
-   
+
   assert (buffer != NULL);
 
 
@@ -1599,12 +1599,12 @@ is_magic_string (char *buffer)
 static int
 is_magic_number (char *buffer)
 {
-  /* 
+  /*
      for the character string pointed to 'buffer':
      return TRUE if it is a MagicNumber sequence,
      return FALSE otherwise.
    */
-   
+
   assert (buffer != NULL);
 
   /* 1 character sequences */
@@ -1684,7 +1684,7 @@ print_using_variant (char *buffer, int *position, VariantType * e, int IsCSV)
      'e' is the current expression to print.
    */
   int IsUsed;
-   
+
   assert (buffer != NULL);
   assert (position != NULL);
   assert (e != NULL);
@@ -1775,9 +1775,9 @@ print_using_variant (char *buffer, int *position, VariantType * e, int IsCSV)
     {
       /*
        **
-       ** PRINT A$    
-       ** PRINT USING "";A$    
-       ** PRINT USING "ABC";A$ 
+       ** PRINT A$
+       ** PRINT USING "";A$
+       ** PRINT USING "ABC";A$
        **
        */
       if (IsCSV)
@@ -1795,12 +1795,12 @@ print_using_variant (char *buffer, int *position, VariantType * e, int IsCSV)
     {
       /*
        **
-       ** PRINT X     
-       ** PRINT USING "";X     
-       ** PRINT USING "ABC";X  
+       ** PRINT X
+       ** PRINT USING "";X
+       ** PRINT USING "ABC";X
        **
        ** [space]number[space]   POSITIVE or ZERO
-       ** [minus]number[space]   NEGATIVE 
+       ** [minus]number[space]   NEGATIVE
        **
        **/
       char *tbuf;
@@ -1829,21 +1829,21 @@ print_using_variant (char *buffer, int *position, VariantType * e, int IsCSV)
 }
 
 /***************************************************************
-  
+
         FUNCTION:       xputs()
-  
+
    DESCRIPTION:    This function outputs a null-terminated
          string to a specified file or output
          device.
-  
+
 ***************************************************************/
 
 static void
 xputs (char *buffer)
 {
-   
+
   assert (buffer != NULL);
-  assert( My != NULL );  
+  assert( My != NULL );
   assert (My->CurrentFile != NULL);
 
   if (My->CurrentFile->width > 0)
@@ -1866,11 +1866,11 @@ xputs (char *buffer)
 
 
 /***************************************************************
-  
+
         FUNCTION:       next_zone()
-  
+
    DESCRIPTION:    Advance to the next print zone.
-  
+
 ***************************************************************/
 static void
 next_zone (void)
@@ -1882,7 +1882,7 @@ next_zone (void)
   {
     /*
      **
-     ** check to see if width will be exceeded 
+     ** check to see if width will be exceeded
      **
      */
     int LastZoneColumn;
@@ -1921,14 +1921,14 @@ next_zone (void)
 }
 
 /***************************************************************
-  
+
         FUNCTION:       xputc1()
-  
+
    DESCRIPTION:    This function outputs a character to a
          specified file or output device, checking
          to be sure the PRINT width is within
          the bounds specified for that device.
-  
+
 ***************************************************************/
 
 static void
@@ -1941,16 +1941,16 @@ xputc1 (char c)
   {
     /*
      **
-     ** check to see if width has been exceeded 
+     ** check to see if width has been exceeded
      **
      */
     if (c != '\n')
     {
       /*
        **
-       ** REM this should print one line, not two lines 
+       ** REM this should print one line, not two lines
        ** WIDTH 80
-       ** PRINT SPACE$( 80 ) 
+       ** PRINT SPACE$( 80 )
        **
        */
       if (My->CurrentFile->col > My->CurrentFile->width)
@@ -1968,12 +1968,12 @@ xputc1 (char c)
 }
 
 /***************************************************************
-  
+
    FUNCTION:       xputc2()
-  
+
    DESCRIPTION:    This function sends a character to a
          specified file or output device.
-  
+
 ***************************************************************/
 
 
@@ -1989,7 +1989,7 @@ xputc2 (char c)
   {
     /*
      **
-     ** CBASIC-II: RANDOM files are padded on the right with spaces 
+     ** CBASIC-II: RANDOM files are padded on the right with spaces
      **
      */
     if (My->CurrentVersion->OptionVersionValue & (C77))
@@ -2009,13 +2009,13 @@ xputc2 (char c)
         }
     /*
      **
-     ** output the character 
+     ** output the character
      **
      */
     fputc (c, My->CurrentFile->cfp);
     /*
      **
-     ** NULLS 
+     ** NULLS
      **
      */
     if (My->LPRINT_NULLS > 0)
@@ -2030,7 +2030,7 @@ xputc2 (char c)
         }
     /*
      **
-     ** update current column position 
+     ** update current column position
      **
      */
     My->CurrentFile->col = 1;
@@ -2039,13 +2039,13 @@ xputc2 (char c)
   }
   /*
    **
-   ** output the character 
+   ** output the character
    **
    */
   fputc (c, My->CurrentFile->cfp);
   /*
    **
-   ** update current column position 
+   ** update current column position
    **
    */
   My->CurrentFile->col++;
@@ -2067,7 +2067,7 @@ S70_PUT (LineType * l)
   /* PUT filename$ , value [, ...] */
   VariantType e;
   VariantType *E;
-   
+
   assert (l != NULL);
   assert( My != NULL );
   assert( My->CurrentVersion != NULL );
@@ -2222,7 +2222,7 @@ D71_PUT (LineType * l)
 {
   /* PUT # file_number [ , RECORD record_number ] */
   int file_number;
-   
+
   assert (l != NULL);
   assert( My != NULL );
 
@@ -2319,7 +2319,7 @@ H14_PUT (LineType * Line)
   /* PUT # FileNumber [ , RecordNumber ]                   ' RANDOM */
   /* PUT # FileNumber   , [ BytePosition ] , scalar [,...] ' BINARY */
   int file_number;
-   
+
   assert (Line != NULL);
   assert( My != NULL );
 
@@ -2471,7 +2471,7 @@ H14_PUT (LineType * Line)
 extern LineType *
 bwb_PUT (LineType * Line)
 {
-   
+
   assert (Line != NULL);
   assert( My != NULL );
   assert( My->CurrentVersion != NULL );
@@ -2494,14 +2494,14 @@ bwb_PUT (LineType * Line)
 
 
 /***************************************************************
-  
+
         FUNCTION:       bwb_write()
-  
+
    DESCRIPTION:    This C function implements the BASIC WRITE
          command.
-  
+
    SYNTAX:     WRITE [# device-number,] element [, element ]....
-  
+
 ***************************************************************/
 
 
@@ -2509,7 +2509,7 @@ extern LineType *
 bwb_WRITE (LineType * l)
 {
   int IsCSV;
-   
+
   assert (l != NULL);
 
   IsCSV = TRUE;
@@ -2529,7 +2529,7 @@ file_write_matrix (LineType * l, char delimit)
   /* MAT PUT    filenumber     ,   matrix [;|,] ... */
   /* Array must be 1, 2 or 3 dimensions    */
   /* Array may be either NUMBER or STRING  */
-   
+
   assert (l != NULL);
 
   do
@@ -2617,7 +2617,7 @@ file_write_matrix (LineType * l, char delimit)
            OPTION BASE 0
            DIM A(5)
            ...
-           MAT PRINT A 
+           MAT PRINT A
            ...
            FOR I = 0 TO 5
            PRINT A(I)
@@ -2670,7 +2670,7 @@ file_write_matrix (LineType * l, char delimit)
            OPTION BASE 0
            DIM B(2,3)
            ...
-           MAT PRINT B 
+           MAT PRINT B
            ...
            FOR I = 0 TO 2
            FOR J = 0 TO 3
@@ -2730,7 +2730,7 @@ file_write_matrix (LineType * l, char delimit)
            OPTION BASE 0
            DIM C(2,3,4)
            ...
-           MAT PRINT C 
+           MAT PRINT C
            ...
            FOR I = 0 TO 2
            FOR J = 0 TO 3
@@ -2808,7 +2808,7 @@ bwb_MAT_PUT (LineType * l)
   /* Array may be either NUMBER or STRING  */
   VariantType x;
   VariantType *X;
-   
+
   assert (l != NULL);
   assert( My != NULL );
   assert( My->SYSOUT != NULL );
@@ -2917,7 +2917,7 @@ bwb_mat_dump (LineType * l, int IsWrite)
   /* Array must be 1, 2 or 3 dimensions    */
   /* Array may be either NUMBER or STRING  */
   char delimit;
-   
+
   assert (l != NULL);
   assert( My != NULL );
   assert( My->SYSOUT != NULL );
@@ -2953,7 +2953,7 @@ bwb_mat_dump (LineType * l, int IsWrite)
 extern LineType *
 bwb_MAT_WRITE (LineType * l)
 {
-   
+
   assert (l != NULL);
 
   return bwb_mat_dump (l, TRUE);
@@ -2962,7 +2962,7 @@ bwb_MAT_WRITE (LineType * l)
 extern LineType *
 bwb_MAT_PRINT (LineType * l)
 {
-   
+
   assert (l != NULL);
 
   return bwb_mat_dump (l, FALSE);

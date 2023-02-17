@@ -476,7 +476,7 @@ CommandType IntrinsicCommandTable[ /* NUM_COMMANDS */ ] =
   "EDIT",  /* Syntax */
   "implementation defined.",  /* Description */
   "EDIT",  /* Name */
-  B15 | B93 | S70 | C77 | D64 | E78 | E86 | G74 | HB1 | HB2 | H80 | G65 | G67 | M80 | R86 | D71 | I70 | I73 | T80 | T79  /* OptionVersionBitmask */
+  VALL  /* OptionVersionBitmask */
 },
 {
   C_ELSE,  /* UniqueID */
@@ -759,7 +759,7 @@ CommandType IntrinsicCommandTable[ /* NUM_COMMANDS */ ] =
   "Provides help on the specified name which is a command name or "
   "function name.",  /* Description */
   "HELP",  /* Name */
-  B15  /* OptionVersionBitmask */
+  VALL  /* OptionVersionBitmask */
 },
 {
   C_IF,  /* UniqueID */

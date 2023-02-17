@@ -36,7 +36,7 @@
 /*                                                               */
 /* Version 3.20 by Howard Wulf, AF5NE                            */
 /*                                                               */
-/* Version 3.20c by KenUnix                                      */
+/* Version 3.20d by KenUnix                                      */
 /*                                                               */
 /*---------------------------------------------------------------*/
 
@@ -451,14 +451,17 @@
 ** This file contains the various OPTION commands
 **
 ** If MSDOS C:\Bwbasic\profile.bas
-** Else if LINUX /usr/share/bwbasic/profile.bas
+** Else if LINUX see
+**
+**    1 to open [profile.bas]
+**    2 to open [/home/$USER/profile.bas]
+**    3 to open [/etc/profile.bas]
+**
 ** Else profile.bas
 **
 */
 #ifdef MSDOS
 #define PROFILENAME  "C:\\Bwbasic\\profile.bas"
-#elif LINUX
-#define PROFILENAME "/usr/share/bwbasic/profile.bas"
 #else
 #define   PROFILENAME        "profile.bas"
 #endif
@@ -1595,6 +1598,7 @@ extern const size_t NUM_VERSIONS;        /* upto 32 BASIC dialects */
 #define T79 (1UL<<21)                /* XBASIC     */
 #define H14 (1UL<<22)                /* Haart      */
 #define B93 (1UL<<23)                /* Bywater-2  */
+#define VALL (0x00FFFFFF)            /* ALL Vers   */
 
 /* OptionFlags */
 #define OPTION_STRICT_ON      0x0001        /* Do NOT allow implicit DIM */
@@ -2142,6 +2146,7 @@ extern void bwb_clrexec (void);
 extern void bwb_decexec (void);
 extern void bwb_execline (void);
 extern void bwb_fclose (FILE * file);
+extern void bwb_close_all(void);
 extern void bwb_file_open (char A, int x, char *B, int y);
 extern int bwb_fload (char *FileName);
 extern int bwb_freeline (LineType * l);

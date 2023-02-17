@@ -2702,24 +2702,11 @@ buff_read_function (char *buffer, int *position, VariantType * X)
               {
                 /* STRING */
                 var_make (argn, StringTypeCode);
-                if ((argn->Value.String =
-                     (StringType *) calloc (1, sizeof (StringType))) == NULL)
-                {
-                  WARN_OUT_OF_MEMORY;
-                  return RESULT_ERROR;
-                }
+                /* CM-20211223 plug RAM leak. var_make() allocs RAM. */
                 PARAM_LENGTH = T.Length;
-                /* PARAM_BUFFER = T.Buffer; */
-                if ((PARAM_BUFFER =
-                     (char *) calloc (T.Length + 1 /* NulChar */ ,
-                                      sizeof (char))) == NULL)
-                {
-                  WARN_OUT_OF_MEMORY;
-                  return RESULT_ERROR;
-                }
-                bwb_memcpy (PARAM_BUFFER, T.Buffer, T.Length);
-                PARAM_BUFFER[PARAM_LENGTH] = NulChar;
-                /* add type  to ParameterTypes */
+                /* CM-20211223 Fix the RAM leak. We keep the buffer instead
+                   of making a new one and copying it. This is faster. */
+                PARAM_BUFFER = T.Buffer;
                 if (ParameterCount < MAX_FARGS)
                 {
                   ParameterTypes |= (1 << ParameterCount);
@@ -2736,7 +2723,6 @@ buff_read_function (char *buffer, int *position, VariantType * X)
               {
                 ParameterCount++;
               }
-              /* RELEASE_VARIANT( &T ); */
             }
             while (buff_skip_seperator (buffer, &p));
 

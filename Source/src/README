@@ -94,6 +94,38 @@ A LIST OF BASIC COMMANDS AND FUNCTIONS IMPLEMENTED in bwBASIC:
 
 CHANGE HISTORY
 
+CHANGES FROM 3.20c to 3.20g
+   Functional updates:
+
+   * Fix memory leaks in function handling
+   * Make HELP & EDIT available in **ALL** VERSIONs.
+   * All files are closed when variables are cleared: NEW & RUN
+   * Fix LSET & RSET so they fill the complete field length
+   * LINE INPUT now reads whitespace correctly
+   * Greeting changed to reflect new contributions
+   * Renum was much improved but still fails in some situations.
+   * Prevent random seeks with BINARY mode files. This makes it
+      compatible with devices, like I2C, SPI, UARTs,...
+    * ANSI and TTY handling improvements
+      - color codes now work correctly and are limited to the proper range.
+    UNIX / Linux "profile.bas" search locations added:
+      - ~/profile.bas
+      - ~/.profile.bas
+   Packaging updates:
+   * INFO directory clean up:
+      - duplicte files removed
+      - files renamed for consistency
+   * READMEFIRST updates from KenUNIX
+   * windoze compile.bat updated for 32/64 bit XP,7,10,11
+   * UNIX compile fixes
+   * make targets added:
+       - addgui
+       - delgui
+       - install
+   * Updated bwbasic.sh and bwbasic.desktop
+   * Change bwbasic.png
+   * General Makefile clean up
+
 CHANGES FROM 3.20 to 3.20c
 
    * General cleanup and bug fixes.

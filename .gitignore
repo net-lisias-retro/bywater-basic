@@ -1,6 +1,22 @@
+<<<<<<< HEAD
 .vs
 ansic/**/*.o
 csharp/**/*.user
 bin
 obj
 packages
+=======
+# compile artifcats
+*.o
+/bwbasic
+/renum
+/autom4te.cache/
+
+# maintainer artifacts
+editfl
+editfl.bas
+*.geany
+*.orig
+*.rej
+*~
+>>>>>>> parallel/ChipMaster/master

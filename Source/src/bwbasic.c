@@ -36,7 +36,7 @@
 /*                                                               */
 /* Version 3.20 by Howard Wulf, AF5NE                            */
 /*                                                               */
-/* Version 3.20c by Ken Martin                                   */
+/* Version 3.20f by KenUNIX & Chipmaster                         */
 /*                                                               */
 /*---------------------------------------------------------------*/
 
@@ -83,11 +83,11 @@ static char *Banner[] = {
   "                                    ##     ## ##     ## ##    ##  ##  ##    ##",
   "                                    ########  ##     ##  ######  ####  ###### ",
   "                                                                              ",
-  "Bywater BASIC Interpreter, version 3.20c                                      ",
+  "Bywater BASIC Interpreter, version 3.20g                                      ",
   "Copyright (c) 1993, Ted A. Campbell                                           ",
   "Copyright (c) 1995-1997  , Jon B. Volkoff                                     ",
   "Copyright (c) 2014-2017  , Howard Wulf, AF5NE                                 ",
-  "              2019-2020  , Ken Martin                                         ",
+  "              2019-2021  , KenUNIX & Chipmaster with fixes                    ",
   "                                                                              ",
   NULL
 };
@@ -243,7 +243,7 @@ break_mes (int x /* Parameter 'x' is never used */ )
   assert( My->CurrentVersion != NULL );
 
    
-  if (My->ERR < 0)                /* in break_mes(), do not make a bad situation worse */
+  if (My->ERR < 0)      /* in break_mes(), do not make a bad situation worse */
   {
     /* an error has already ben reported */
   }
@@ -644,8 +644,8 @@ process_basic_line (char *buffer)
   else if (is_numconst (buffer) == TRUE)
   {
       /*-----------------------------------------------------------------*/
-    /* Another possibility: if buffer is a numeric constant,           */
-    /* then delete the indicated line number (JBV)                     */
+      /* Another possibility: if buffer is a numeric constant,           */
+      /* then delete the indicated line number (JBV)                     */
       /*-----------------------------------------------------------------*/
     /* 100 */
     int LineNumber;
@@ -701,8 +701,44 @@ execute_profile (char *FileName)
 
   My->NextValidLineNumber = MINLIN;
 
-/* printf ("to open [%s]\r\n",FileName); Ken */
-  profile = fopen (FileName, "r");
+#ifdef HAVE_UNIX
+/* Begin 20200806 ChipMaster@YeOlPiShack.net  Patch --
+ *
+ *    on *nix check the current folder, user's home folder and then /etc for
+ *    the profile script
+ *
+ *    WARN: I assume that $HOME and FileName are reasonably sized. If one
+ *    or the other are oversized then an attempt to load a weird-named
+ *    script will happen.
+ *
+ *    1 to open [profile.bas]
+ *    2 to open [$HOME/profile.bas]
+ *    3 to open [$HOME/.profile.bas] - because ChipMaster doesn't like clutter
+ *    4 to open [/etc/profile.bas]
+ *                            */
+  char home[1024];   home[0]=home[sizeof(home)-1]=0;
+  char pname[1024]; pname[0]=pname[sizeof(pname)-1]=0;
+  profile = fopen(FileName, "rt");
+  if(profile == NULL) {
+    strncpy(home, getenv("HOME"), sizeof(home)-1);
+    if(home[0]) {
+      snprintf(pname, sizeof(pname)-1, "%s/%s", home, FileName);
+      profile = fopen (pname, "rt");
+    }
+    if(profile == NULL) {
+      snprintf(pname, sizeof(pname)-1, "%s/.%s", home, FileName);
+      profile = fopen (pname, "rt");
+    }
+  }
+  if(profile == NULL) {
+    snprintf(pname, sizeof(pname)-1, "/etc/%s", FileName);
+    profile = fopen(pname, "rt");
+  }
+#else
+  profile = fopen (FileName, "rt");
+#endif
+/* End 20200806 Patch */
+
   if (profile == NULL)
   {
     /* NOT FOUND */
@@ -730,8 +766,10 @@ execute_profile (char *FileName)
   }
 
   /* 
-     The profile only exists to allow executing OPTION ... commands.  No other use is supported. 
+     The profile only exists to allow executing OPTION ... commands.
+     No other use is supported. 
    */
+
   {
     char *tbuf;
     int tlen;
@@ -833,12 +871,14 @@ main (int argc, char **argv)
   execute_profile (PROFILENAME);
 #endif
 
-  /* check to see if there is a program file: but do this only the first time around! */
+  /* check to see if there is a program file: but do
+   * this only the first time around! */
   for (i = 1; i < argc; i++)
   {
     /* 
-       SYNTAX:  bwbasic [ --profile profile.bas ] [ --tape tapefile.inp ] [ program.bas ]
-     */
+       SYNTAX:  
+       bwbasic [ --profile profile.bas ] [ --tape tapefile.inp ] [ program.bas ]
+    */
     if (bwb_stricmp (argv[i], "--profile") == 0
         || bwb_stricmp (argv[i], "-p") == 0
         || bwb_stricmp (argv[i], "/profile") == 0
@@ -938,8 +978,8 @@ bwb_interact (void)
   if (My->AutomaticLineNumber > 0 && My->AutomaticLineIncrement > 0)
   {
     /* AUTO 100, 10 */
-    char *zbuf;                        /* end of the prompt, start of the response */
-    int zlen;                        /* length of the prompt */
+    char *zbuf;                 /* end of the prompt, start of the response */
+    int zlen;                   /* length of the prompt */
     char LineExists;
     LineType *l;
 
@@ -964,7 +1004,7 @@ bwb_interact (void)
     zlen = bwb_strlen (tbuf);
     bwx_input (tbuf, FALSE, zbuf, tlen - zlen);
     zbuf[-1] = ' ';                /* remove LineExists indicator */
-    CleanLine (zbuf);                /* JBV */
+    CleanLine (zbuf);              /* JBV */
     if (is_empty_string (zbuf))
     {
       /* empty response */
@@ -974,7 +1014,7 @@ bwb_interact (void)
            An empty response with an existing line,
            causes AUTO to continue with the next line,
            leaving the current line intact.
-         */
+        */
         My->AutomaticLineNumber += My->AutomaticLineIncrement;
       }
       else
@@ -982,7 +1022,7 @@ bwb_interact (void)
         /* 
            An empty response with a non-existing line,
            causes AUTO to terminate.
-         */
+        */
         My->AutomaticLineNumber = 0;
         My->AutomaticLineIncrement = 0;
       }
@@ -1126,22 +1166,20 @@ bwb_fload (char *FileName)
   FILE *file;
   char *tbuf;
   int tlen;
-   
-
-
-
+  
   Magic_Word = "%INCLUDE ";        /* SYNTAX: %INCLUDE literal.file.name */
   Magic_Length = bwb_strlen (Magic_Word);
   tbuf = My->MaxLenBuffer;
   tlen = MAXLEN;
 
-
   /*
      Just in case you are wondering...
-     Although this handles the most common cases, it does not handle all possible cases.
+     Although this handles the most common cases, it does not
+     handle all possible cases.
      The correct solution is to provide the actual filename (with extension),
      as it exists in the operating system.
    */
+  
   file = nice_open (FileName);
   if (file == NULL)
   {
@@ -1257,7 +1295,8 @@ FindClassicStatementEnd (char *C)
       }
     }
   }
-  /* not a special case, so split on the first unquoted OptionCommentChar or OptionStatementChar */
+  /* not a special case, so split on the first unquoted
+   * OptionCommentChar or OptionStatementChar */
   while (*C != NulChar)
   {
     if (*C == My->CurrentVersion->OptionQuoteChar)
@@ -1382,10 +1421,6 @@ ImportClassicIfThenElse (char *InBuffer)
 
   Input = InBuffer;
   Output = OutBuffer;
-
-
-
-
 
   if (My->CurrentVersion->OptionStatementChar == NulChar)
   {
@@ -1712,8 +1747,8 @@ bwb_ladd (char *buffer, LineType * p, int IsUser)
     }
     else if (IS_CHAR (BreakChar, My->CurrentVersion->OptionCommentChar))
     {
-      /* ThisStatment will turn out to be the last */
-      *ThisStatement = My->CurrentVersion->OptionCommentChar;
+      /* ThisStatment will turn out to be the last  08082020 Ken ? */
+      *  ThisStatement = My->CurrentVersion->OptionCommentChar;
     }
     else if (IS_CHAR (BreakChar, My->CurrentVersion->OptionStatementChar))
     {
@@ -1830,7 +1865,7 @@ bwb_ladd (char *buffer, LineType * p, int IsUser)
           fprintf (My->SYSOUT->cfp, "MISSING SPACE AFTER LINE NUMBER: %s\n",
                    buffer);
           ResetConsoleColumn ();
-          My->ERR = -1;                /* bwb_ladd, MISSING SPACE AFTER LINE NUMBER */
+          My->ERR = -1;         /* bwb_ladd, MISSING SPACE AFTER LINE NUMBER */
         }
         /* newuffer does NOT contain the line number */
         newbuffer += l->position;
@@ -1882,7 +1917,7 @@ bwb_ladd (char *buffer, LineType * p, int IsUser)
                  "ILLEGAL COMMAND AFTER LINE NUMBER: %d %s\n", l->number,
                  l->buffer);
         ResetConsoleColumn ();
-        My->ERR = -1;                /* bwb_ladd, ILLEGAL COMMAND AFTER LINE NUMBER */
+        My->ERR = -1;        /* bwb_ladd, ILLEGAL COMMAND AFTER LINE NUMBER */
       }
       /*
        **
@@ -1974,7 +2009,7 @@ bwb_xtxtline (char *buffer)
   /* execute the line as BASIC command line */
   if (bwb_incexec ())
   {
-    My->StackHead->line = My->UserMarker->next;        /* and set current line in it */
+    My->StackHead->line = My->UserMarker->next; /* and set current line in it */
     My->StackHead->ExecCode = EXEC_NORM;
   }
 }
@@ -2124,7 +2159,8 @@ bwx_Error (int ERR, char *ErrorMessage)
 {
   /*
      ERR is the error number
-     ErrorMessage is used to override the default error message, and is usually NULL
+     ErrorMessage is used to override the default error
+     message, and is usually NULL
    */
   assert( My != NULL );
    
@@ -2137,11 +2173,20 @@ bwx_Error (int ERR, char *ErrorMessage)
      **
      */
     My->IsErrorPending = FALSE;        /* bwx_Error, ERR == 0 */
-    My->ERR = 0;                /* bwx_Error, ERR == 0 */
-    My->ERL = NULL;                /* bwx_Error, ERR == 0 */
-    bwb_strcpy (My->ERROR4, "");        /* bwx_Error, ERR == 0 */
+    My->ERR = 0;                       /* bwx_Error, ERR == 0 */
+    My->ERL = NULL;                    /* bwx_Error, ERR == 0 */
+    bwb_strcpy (My->ERROR4, "");       /* bwx_Error, ERR == 0 */
     return FALSE;
-  case 6:                        /* WARN_OVERFLOW */
+#ifdef CMDEBUG
+  case 57: /* ChipMaster testing ... */
+    fprintf(stderr, "I/O Error:  feof=%d ferror=%d errno=%d\n",
+      (int)feof(My->CurrentFile->cfp),
+      (int)ferror(My->CurrentFile->cfp),
+      errno
+    );
+    break;
+#endif
+  case 6:                         /* WARN_OVERFLOW */
   case 11:                        /* WARN_DIVISION_BY_ZERO */
   case 15:                        /* WARN_STRING_TOO_LONG */
     /* 
@@ -2191,9 +2236,9 @@ bwx_Error (int ERR, char *ErrorMessage)
      ** only keep the first pending error to occur 
      **
      */
-    My->IsErrorPending = TRUE;        /* bwx_Error, ERR != 0 */
-    My->ERR = ERR;                /* bwx_Error, ERR != 0 */
-    My->ERL = NULL;                /* bwx_Error, ERR != 0 */
+    My->IsErrorPending = TRUE;          /* bwx_Error, ERR != 0 */
+    My->ERR = ERR;                      /* bwx_Error, ERR != 0 */
+    My->ERL = NULL;                     /* bwx_Error, ERR != 0 */
     bwb_strcpy (My->ERROR4, "");        /* bwx_Error, ERR != 0 */
     if (My->StackHead)
     {
@@ -2348,9 +2393,9 @@ bwb_execline (void)
     {
       /*
        **
-       ** -------------------------------------------------------------------------
+       ** ---------------------------------------------------------------------
        ** USER line in console
-       ** -------------------------------------------------------------------------
+       ** ---------------------------------------------------------------------
        **
        ** fall thru to the DEFAULT ERROR HANDLER 
        **
@@ -2372,9 +2417,9 @@ bwb_execline (void)
     {
       /*
        **
-       ** -------------------------------------------------------------------------
+       ** ---------------------------------------------------------------------
        ** ON ERROR RESUME NEXT
-       ** -------------------------------------------------------------------------
+       ** ---------------------------------------------------------------------
        **
        */
       assert (r != NULL);
@@ -2389,9 +2434,9 @@ bwb_execline (void)
     {
       /*
        **
-       ** -------------------------------------------------------------------------
+       ** ---------------------------------------------------------------------
        ** ON ERROR GOTO 0
-       ** -------------------------------------------------------------------------
+       ** ---------------------------------------------------------------------
        **
        ** fall thru to the DEFAULT ERROR HANDLER
        **
@@ -2401,9 +2446,9 @@ bwb_execline (void)
     {
       /*
        **
-       ** -------------------------------------------------------------------------
+       ** ---------------------------------------------------------------------
        ** RECURSION
-       ** -------------------------------------------------------------------------
+       ** ---------------------------------------------------------------------
        **
        ** For example: 
        ** 10 ON ERROR GOTO 20
@@ -2427,12 +2472,13 @@ bwb_execline (void)
           {
             /* 
              **
-             ** -------------------------------------------------------------------------
+             ** ---------------------------------------------------------------
              ** OPTION ERROR GOSUB
-             ** -------------------------------------------------------------------------
+             ** ---------------------------------------------------------------
              **
              ** RETURN should act like RESUME NEXT...
-             ** Execution resumes at the statement immediately following the one which caused the error. 
+             ** Execution resumes at the statement immediately following 
+	     ** the one which caused the error. 
              ** For structured commands, this is the bottom line of the structure.
              **
              */
@@ -2472,9 +2518,9 @@ bwb_execline (void)
           {
             /*
              **
-             ** -------------------------------------------------------------------------
+             ** ---------------------------------------------------------------
              ** OPTION ERROR GOTO
-             ** -------------------------------------------------------------------------
+             ** ---------------------------------------------------------------
              **
              */
             x->position = 0;        /* start of line */
@@ -2489,9 +2535,9 @@ bwb_execline (void)
     }
     /*
      **
-     ** -------------------------------------------------------------------------
+     ** -----------------------------------------------------------------------
      **                           DEFAULT ERROR HANDLER (FATAL)
-     ** -------------------------------------------------------------------------
+     ** -----------------------------------------------------------------------
      **
      */
     /*
@@ -2562,7 +2608,7 @@ bwb_execline (void)
       bwb_clrexec ();
       SetOnError (0);
 
-      My->ERR = -1;                /* in bwb_execline(), default error handler */
+      My->ERR = -1;             /* in bwb_execline(), default error handler */
 
 
       /* reset the break handler */
@@ -3642,3 +3688,4 @@ bwb_vector( LineType *l )
 }
 
 /* EOF */
+

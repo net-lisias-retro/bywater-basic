@@ -44,5 +44,5 @@ bwd_cmd.c:
 bwd_fun.c:
 bwx_tty.c:
 Turbo Link  Version 5.1 Copyright (c) 1992 Borland International
-
-        Available memory 3614708
+
+        Available memory 3614708
