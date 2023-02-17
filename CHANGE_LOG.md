@@ -1,5 +1,7 @@
 # bywater basic (bw-basic) :: Change Log
 
+* 2008-0305: 2.30 (Paul Edwards)
+	+ No change log provided. 
 * 1997-1011: 2.20.2 (Jon B. Volkoff)
 	+ Patch Level 2.
 	+ `bwb_cmd.c`
