@@ -1,6 +1,5 @@
+**//bin
+**/obj
+**/*.user
 .vs
-ansic/**/*.o
-csharp/**/*.user
-bin
-obj
-packages
+Source
