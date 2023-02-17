@@ -1,5 +1,9 @@
 # bywater basic (bw-basic) :: Change Log
 
+* 2009-0126: 2.40 (Paul Edwards)
+	+ Bug fixes from Bill Chatfield
+	+ Updated documentation
+	+ Added support for compiling on CMS (another IBM mainframe OS)
 * 2008-0305: 2.30 (Paul Edwards)
 	+ Minor bug fixes, cosmetic improvements and portability improvements.
 	+ Added support for compiling on MVS (IBM mainframe) 
