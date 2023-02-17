@@ -1,5 +1,190 @@
 # bywater basic (bw-basic) :: Change Log
 
+* 2017-0604: 3.20 (Howard Wulf)
+	+ Implements most of the following BASIC dialects:
+		- OPTION VERSION "BYWATER"        ' Bywater BASIC 3
+		- OPTION VERSION "BYWATER-2"      ' Bywater BASIC 2
+		- OPTION VERSION "CALL/360"       ' SBC CALL/360 Mainframe BASIC
+		- OPTION VERSION "CBASIC-II"      ' CBASIC-II for CP/M
+		- OPTION VERSION "DARTMOUTH"      ' Dartmouth DTSS BASIC
+		- OPTION VERSION "ECMA-55"        ' ANSI Minimal BASIC
+		- OPTION VERSION "ECMA-116"       ' ANSI Full BASIC
+		- OPTION VERSION "GCOS"           ' GE 600 Mainframe BASIC
+		- OPTION VERSION "HAARDT"         ' bas 2.4 by Michael Haardt
+		- OPTION VERSION "HANDBOOK1"      ' The BASIC Handbook, 1st Edition
+		- OPTION VERSION "HANDBOOK2"      ' The BASIC Handbook, 2nd Edition
+		- OPTION VERSION "HEATH"          ' Heath Benton Harbor BASIC
+		- OPTION VERSION "MARK-I"         ' GE 265 Mainframe BASIC
+		- OPTION VERSION "MARK-II"        ' GE 435 Mainframe BASIC
+		- OPTION VERSION "MBASIC"         ' Microsoft BASIC-80 for Xenix
+		- OPTION VERSION "PDP-8"          ' DEC PDP-8 BASIC
+		- OPTION VERSION "PDP-11"         ' DEC PDP-11 BASIC
+		- OPTION VERSION "RBASIC"         ' Micronics RBASIC for 6809 FLEX
+		- OPTION VERSION "RSTS-11"        ' DEC RSTS-11 BASIC-PLUS
+		- OPTION VERSION "SYSTEM/360"     ' IBM System/360 Mainframe BASIC
+		- OPTION VERSION "SYSTEM/370"     ' IBM System/370 Mainframe BASIC
+		- OPTION VERSION "TRS-80"         ' TRS-80 Model I/III/4 LBASIC
+		- OPTION VERSION "VINTAGE"        ' Vintage BASIC 1.0.1
+		- OPTION VERSION "XBASIC"         ' TSC XBASIC for 6800 FLEX
+	+ CONST variable [, ...] = value
+		- Assigns the value to variable.  
+		- Any later assignment to the variable causus a VARIABLE NOT DECLARED error.
+	+ DIM now supports lower and upper bounds.
+		- OPTION BASE 1
+		- DIM X(      9 ) ' lower bound is 1
+		- DIM Y( 5 TO 9 ) ' lower bound is 5
+	+ DIM now supports virtual variables.
+		- OPTION BASE 1
+		- OPEN "VIRTUAL.DAT" FOR VIRTUAL AS # 3 ' virtual data file 
+		- DIM # 3, A( 1000 )        ' array is virtual
+		- LET A( 1000 ) = 0         ' value is written to the file
+		- LET X = A( 1000 )         ' value is read from the file
+		- CLOSE # 3                 ' array is no longer valid
+	+ ERROR 27, "Bad DATA"
+		- Occurs when the READ command detects garbage in a DATA command.
+	+ INPUT LINE
+		- Same as LINE INPUT.
+	+ MAT now supports lower and upper bounds.
+		- OPTION BASE 1
+		- MAT X(      9 ) = ZER ' lower bound is 1
+		- MAT Y( 5 TO 9 ) = ZER ' lower bound is 5
+		- MAT X = ZER(      9 ) ' lower bound is 1
+		- MAT Y - ZER( 5 TO 9 ) ' lower bound is 5
+	+ MAXLEN()
+		- Returns the maximum string length.
+	+ OPTION DIGITS integer
+		- Sets the number of significant digits for PRINT.  
+		- Setting the value to zero restores the default.   
+	+ OPTION EDIT string$
+		- Sets the program name used by the EDIT command.
+		- Setting this to "" disables EDIT command.
+	+ OPTION FILES string$
+		- Sets the program name used by the FILES command.
+		- Setting this to "" disables FILES command.
+	+ OPTION PROMPT string$
+		- Sets the prompt.
+	+ OPTION PUNCT AT char$
+		- Sets the PRINT AT character, commonly "@".
+		- Setting this to "" disables PRINT AT.
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT BYTE char$
+		- Sets the BYTE type suffix, commonly "~".
+		- Setting this to "" disables BYTE suffix.
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT COMMENT char$
+		- Sets the trailing COMMENT character, commonly "'".
+		- Setting this to "" disables trailing comments.
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT CURRENCY char$
+		- Sets the CURRENCY type suffix, commonly "@".
+		- Setting this to "" disables CURRENCY suffix.
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT DOUBLE char$
+		- Sets the DOUBLE type suffix, commonly "#".
+		- Setting this to "" disables DOUBLE suffix.
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT FILENUM char$
+		- Sets the FILE NUMBER prefix, commonly "#".
+		- Setting this to "" disables the FILE NUMBER prefix.
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT IMAGE char$
+		- Sets the shortcut IMAGE character, commonly ":".
+		- Setting this to "" disables the shortcut IMAGE character.
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT INPUT char$
+		- Sets the shortcut INPUT character, commonly "!".
+		- Setting this to "" disables the shortcut INPUT character.
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT INTEGER char$
+		- Sets the INTEGER type suffix, commonly "%".
+		- Setting this to "" disables INTEGER suffix.
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT LONG char$
+		- Sets the LONG type suffix, commonly "&".
+		- Setting this to "" disables LONG suffix.
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT LPAREN char$
+		- Sets the LEFT PARENTHESIS character, commonly "(".
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT PRINT char$
+		- Sets the shortcut PRINT character, commonly "?".
+		- Setting this to "" disables the shortcut PRINT character.
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT QUOTE char$
+		- Sets the QUOTE character, commonly """".
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT RPAREN char$
+		- Sets the RIGHT PARENTHESIS character, commonly ")".
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT SINGLE char$
+		- Sets the SINGLE type suffix, commonly "!".
+		- Setting this to "" disables SINGLE suffix.
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT STATEMENT char$
+		- Sets the shortcut STATEMENT seperator character, commonly ":".
+		- Setting this to "" disables the STATEMENT seperator.
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION PUNCT STRING char$
+		- Sets the STRING type suffix, commonly "$".
+		- Setting this to "" disables STRING suffix.
+		- Setting this to a non-punctuation character is not supported.
+	+ OPTION RECLEN integer
+		- Sets the default record length for RANDOM files, commonly 128.
+		- Setting thisto zero means there is no default RANDOM record length, so the record  length must be specified in the OPEN statement.
+		- With OPTION RECLEN 128:
+			- OPEN "FILE.DAT" FOR RANDOM AS #3
+		- is considered to be the same as
+			- OPEN "FILE.DAT" FOR RANDOM AS #3 LEN 128
+		-With OPTION RECLEN 0:
+			- OPEN "FILE.DAT" FOR RANDOM AS #3
+		-causes an error.
+	+ OPTION RENUM string$
+		- Sets the program name used by the RENUM command.
+		- Setting this to "" disables RENUM command.
+	+ OPTION SCALE integer
+		- Sets the number of digits to round after the decimal point for PRINT.
+		- Setting the value to zero disables rounding.
+	+ OPTION USING DIGIT
+	+ OPTION USING COMMA
+	+ OPTION USING PERIOD
+	+ OPTION USING PLUS
+	+ OPTION USING MINUS
+	+ OPTION USING EXRAD
+	+ OPTION USING DOLLAR
+	+ OPTION USING FILLER
+	+ OPTION USING LITERAL
+	+ OPTION USING FIRST
+	+ OPTION USING ALL
+	+ OPTION USING LENGTH
+		- Sets the characters recognized by PRINT USING.
+		- Setting these to a non-punctuation character is not supported.
+	+ OPTION VERSION now requires a string instead of a literal.
+		- Some version names have changed.
+	+ OPTION VERSION "PDP-8"
+		- Added LPT, PTP, PTR, TTY, TTY IN and TTY OUT commands.
+		- Added GET() and PUT() functions.
+	+ OPTION VERSION "CALL/360"
+	+ OPTION VERSION "SYSTEM/360"
+	+ OPTION VERSION "SYSTEM/370"
+		- Added alphabet extenders.  $ is a string variable.
+	+ OPTION ZONE integer
+		- Sets the PRINT zone width.  
+		- Setting the value to zero restores the default.
+	+ REPEAT - UNTIL added
+		- REPEAT
+			- ...
+			- EXIT REPEAT
+			- ...
+		- UNTIL expression ' exits when expression != 0
+	+ SPC( X ) and TAB( X )
+		- No longer use control codes.
+	+ UNTIL - UEND removed (to add REPEAT - UNTIL)
+		- Here is a work-around for existin code using UNTIL-UEND:
+		- UNTIL expression -->> WHILE NOT expression
+			- ...                   ...
+			- EXIT UNTIL     -->>   EXIT WHILE
+			- ...                   ...
+		- UEND             -->> WEND
 * 2016-0717: 3.10 (Howard Wulf)
 	+ Implements most of the following BASIC dialects:
 		- OPTION VERSION DARTMOUTH        ' Dartmouth DTSS BASIC
